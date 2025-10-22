@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemarakup!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500;700&family=Russo+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <header>
+            <h1>Gemarakup!</h1>
+            <div>
+                <button id="change-profile-btn" class="hidden">Change Profile</button>
+                <button id="creator-nav-btn">Theme Creator</button>
+                <button id="main-menu-nav-btn" class="hidden">Main Menu</button>
+            </div>
+        </header>
+
+        <div id="profile-container" class="container hidden">
+            <div class="menu-content" style="max-width: 600px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Who is Playing?</h2>
+                <div id="profile-list" style="margin-bottom: 2rem;">
+                    </div>
+                <div class="menu-section">
+                    <h3>Create a New Profile</h3>
+                    <input type="text" id="new-profile-name-input" placeholder="Enter profile name (e.g., Grade 6)" style="font-size: 1.2rem; padding: 10px; width: 70%; margin-right: 10px;">
+                    <button id="add-profile-btn">Create</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="setup-container" class="container">
+            <div class="menu-content">
+                <div class="menu-section">
+                    <h2>Gemarakup Classic</h2>
+                    <p>A balanced set of colors and events for a classic game.</p>
+                    <button id="default-start-btn" style="margin-top: 1rem;">Start Game</button>
+                </div>
+
+                <div class="menu-section">
+                    <h2>Import a Theme File</h2>
+                    <p>Load a theme (.json) from your computer.</p>
+                    <button id="import-theme-btn" style="margin-top: 1rem;">Import Theme</button>
+                    <input type="file" id="theme-importer" class="hidden" accept=".json">
+                </div>
+
+                <div class="menu-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                         <h2>醇 Hall of Fame 醇</h2>
+                         <div>
+                             <button id="class-hs-btn" class="active">Class Ranking</button>
+                             <button id="global-hs-btn">Global Ranking</button>
+                         </div>
+                    </div>
+                    <ol id="high-score-list"></ol>
+                    <p id="no-high-scores-msg" class="hidden">No high scores recorded yet. Be the first!</p>
+                </div>
+
+                <div class="menu-section">
+                    <h2>Play with a Saved Theme</h2>
+                    <div id="saved-themes-list"></div>
+                    <p id="no-saved-themes-msg" class="hidden" style="margin-top: 1rem;">You have no saved themes yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="theme-creator-container" class="container hidden">
+             <div id="image-customization-panel">
+                <h2>Customize Images & Colors</h2>
+                <p>The game's color palette will be automatically generated from your background image.</p>
+                <div class="image-upload-grid">
+                     <div class="upload-category">
+                        <p><strong>Required:</strong> Background Image</p>
+                        <label for="image-input" class="file-label">Choose Background</label>
+                        <input type="file" id="image-input" accept="image/*" class="hidden">
+                    </div>
+                    <div class="upload-category">
+                        <p>Background Music (Optional)</p>
+                        <label for="music-input" class="file-label">Choose Music</label>
+                        <input type="file" id="music-input" accept="audio/*" class="hidden">
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 2rem;">Customize Event Images</h2>
+                <p>Upload 1-5 images for each game event. One will be chosen randomly during gameplay.</p>
+                <div id="specific-image-uploads-container">
+                     </div>
+            </div>
+
+            <h2 style="margin-top: 2rem;">Customize Sound Effects (Optional)</h2>
+            <p>Upload your own audio files (.mp3, .wav, .ogg) for game events. This stores them for offline use.</p>
+            <div class="image-upload-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="upload-category">
+                    <p>Small Point Gain (e.g., +5)</p>
+                    <label for="sfx-input-lowGain" class="file-label">Choose Sound</label>
+                    <input type="file" id="sfx-input-lowGain" class="sfx-input hidden" data-sfx-name="lowGain" accept="audio/*">
+                </div>
+                <div class="upload-category">
+                    <p>Large Point Gain (e.g., +20)</p>
+                    <label for="sfx-input-highGain" class="file-label">Choose Sound</label>
+                    <input type="file" id="sfx-input-highGain" class="sfx-input hidden" data-sfx-name="highGain" accept="audio/*">
+                </div>
+                <div class="upload-category">
+                    <p>Small Point Loss (e.g., -5)</p>
+                    <label for="sfx-input-lowLoss" class="file-label">Choose Sound</label>
+                    <input type="file" id="sfx-input-lowLoss" class="sfx-input hidden" data-sfx-name="lowLoss" accept="audio/*">
+                </div>
+                <div class="upload-category">
+                    <p>Large Point Loss (e.g., -20)</p>
+                    <label for="sfx-input-highLoss" class="file-label">Choose Sound</label>
+                    <input type="file" id="sfx-input-highLoss" class="sfx-input hidden" data-sfx-name="highLoss" accept="audio/*">
+                </div>
+                <div class="upload-category">
+                    <p>Special Event / Dungeon</p>
+                    <label for="sfx-input-special" class="file-label">Choose Sound</label>
+                    <input type="file" id="sfx-input-special" class="sfx-input hidden" data-sfx-name="special" accept="audio/*">
+                </div>
+                <div class="upload-category">
+                    <p>Game Over</p>
+                    <label for="sfx-input-gameOver" class="file-label">Choose Sound</label>
+                    <input type="file" id="sfx-input-gameOver" class="sfx-input hidden" data-sfx-name="gameOver" accept="audio/*">
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h2>Customize Board Squares</h2>
+                <p style="margin-top: 1rem;">Optionally, choose up to 8 emojis to display on the game board squares.</p>
+                <button id="select-emojis-btn" style="margin-top: 0.5rem;">Select Board Emojis</button>
+
+                <div id="emoji-display-options" style="margin-top: 1.5rem;" class="hidden">
+                    <h4>Emoji Display Style</h4>
+                    <div class="game-options" style="justify-content: flex-start; gap: 1rem;">
+                         <label><input type="radio" name="emoji-mode" value="overlay" checked> Overlay (On top of colors)</label>
+                         <label><input type="radio" name="emoji-mode" value="replace"> Replace (Uses neutral background)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="creator-actions" style="margin-top: 1.5rem;">
+                <button id="start-with-custom-btn">Play with this Theme</button>
+                <button id="save-custom-theme-btn">Save this Theme</button>
+            </div>
+        </div>
+
+        <div id="game-container" class="hidden">
+            <div id="scoreboard-container">
+                <div id="scoreboard"></div>
+                <button id="game-menu-btn">End Game</button>
+            </div>
+            <div id="game-board"></div>
+        </div>
+
+        <div id="dungeon-container" class="container hidden" style="background-color: #0d0d1a;">
+             <div class="menu-content" id="dungeon-content" style="background: none; box-shadow: none; border: none; padding: 0;">
+                 <h2>Entering the depths...</h2>
+            </div>
+        </div>
+
+    </div> <div id="game-settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Game Settings</h2>
+             <div class="menu-section" style="background: none; padding: 1rem 0;">
+                <h3>Game Mode</h3>
+                <div id="game-mode-options-modal" class="game-options">
+                    <label><input type="radio" name="game-mode-modal" value="math" checked> Math Mode</label>
+                    <label><input type="radio" name="game-mode-modal" value="manual"> Manual Mode</label>
+                </div>
+            </div>
+            <div class="menu-section" style="background: none; padding: 1rem 0;">
+                <h3>Game Length</h3>
+                <div id="game-length-options-modal" class="game-options">
+                    <label><input type="radio" name="game-length-modal" value="30" checked> Short (~30)</label>
+                    <label><input type="radio" name="game-length-modal" value="60"> Medium (~60)</label>
+                    <label><input type="radio" name="game-length-modal" value="90"> Long (~90)</label>
+                </div>
+            </div>
+            <div class="menu-section" style="background: none; padding: 1rem 0;">
+                <h3>Math Difficulty (Math Mode Only)</h3>
+                <div id="math-difficulty-options" class="game-options">
+                    <label><input type="radio" name="math-difficulty" value="1" checked> Easy</label>
+                    <label><input type="radio" name="math-difficulty" value="2"> Medium</label>
+                    <label><input type="radio" name="math-difficulty" value="3"> Hard</label>
+                    <label><input type="radio" name="math-difficulty" value="4"> Expert</label>
+                    <label><input type="radio" name="math-difficulty" value="5"> Genius</label>
+                </div>
+            </div>
+            <div class="menu-section" style="background: none; padding: 1rem 0;">
+                <h3>Number of Teams</h3>
+                <div class="game-options">
+                    <select id="team-count-select-modal" style="font-size: 1.2rem; padding: 5px 10px;">
+                        <option value="2" selected>2 Teams</option>
+                        <option value="3">3 Teams</option>
+                        <option value="4">4 Teams</option>
+                    </select>
+                </div>
+            </div>
+            <div class="team-setup-actions" style="margin-top: 1.5rem;">
+                <button id="confirm-settings-btn">Confirm & Continue</button>
+                <button id="cancel-settings-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="team-setup-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 650px;"></div>
+    </div>
+
+    <div id="avatar-select-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px;"></div>
+    </div>
+
+    <div id="emoji-select-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <h2>Select Up to 8 Emojis</h2>
+            <p>Click an emoji to select it. Click again to deselect.</p>
+            <div id="emoji-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; margin-top: 1rem; padding: 10px;"></div>
+            <div class="team-setup-actions" style="margin-top: 1.5rem;">
+                <button id="confirm-emojis-btn">Confirm Selections</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="transfer-points-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="transfer-title"></h2>
+            <p id="transfer-description"></p>
+            <div id="transfer-team-buttons"></div>
+        </div>
+    </div>
+
+    <div id="event-modal" class="modal hidden">
+        <div class="modal-content" id="event-message"></div>
+    </div>
+
+    <div id="fullscreen-event" class="modal hidden">
+        <div class="fullscreen-content">
+            <img id="fullscreen-image" src="" alt="Event Image">
+            <div id="fullscreen-message"></div>
+        </div>
+    </div>
+
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content game-over-content">
+            <h1>Game Over!</h1>
+            <div class="winner-trophy">醇</div>
+            <div class="winner-details">
+                <span id="winner-avatar"></span>
+                <h2 id="winner-name"></h2>
+            </div>
+            <p id="winner-score"></p>
+            <button id="game-over-menu-btn">Return to Menu</button>
+        </div>
+    </div>
+
+    <div id="question-modal" class="modal hidden">
+        <div class="modal-content">
+            <div id="question-timer"></div>
+            <div id="question-content"></div>
+        </div>
+    </div>
+
+    <div id="gamble-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2>Dangerous Gamble!</h2>
+            <p>Choose an opponent and the points to wager.</p>
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label for="gamble-opponent-select">Choose Opponent:</label>
+                <select id="gamble-opponent-select" style="font-size: 1.1rem; padding: 8px; width: 100%;"></select>
+            </div>
+            <div class="form-group">
+                <label for="gamble-amount-select">Wager Amount:</label>
+                <select id="gamble-amount-select" style="font-size: 1.1rem; padding: 8px; width: 100%;">
+                    <option value="5">5 Points</option>
+                    <option value="10">10 Points</option>
+                    <option value="20">20 Points</option>
+                </select>
+            </div>
+            <div id="gamble-result" style="margin-top: 1.5rem; min-height: 100px; font-size: 1.1rem;"></div>
+            <div class="team-setup-actions" style="margin-top: 1.5rem;">
+                <button id="confirm-gamble-btn">Roll the Dice!</button>
+                <button id="cancel-gamble-btn" style="background-color: var(--rank-last-color);">Cancel Gamble</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="annul-card-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2>Use Annul Card? ワ</h2>
+            <p id="annul-card-prompt" style="margin: 1rem 0; font-size: 1.1rem;"></p>
+            <div id="annul-card-outcome" style="margin-bottom: 1.5rem; opacity: 0.7; font-weight: bold;"></div>
+            <div class="team-setup-actions">
+                <button id="confirm-annul-btn" style="background-color: var(--rank1-color);">Yes, Use Card!</button>
+                <button id="cancel-annul-btn" style="background-color: var(--rank-last-color);">No, Take the Hit!</button>
+            </div>
+        </div>
+    </div>
+
+
+    <audio id="background-music" loop></audio>
+
+    <script src="color-thief.min.js"></script>
+    <script src="MathQuestion.js"></script>
+    <script src="howler.min.js"></script> 
+    
+    <script src="script.js"></script> 
+    
+    <script src="dungeon.js"></script>    
+</body>
+</html>

@@ -1,0 +1,647 @@
+/* --- ROOT & BODY DEFAULTS --- */
+:root {
+    --primary-bg: #1a1a2e;
+    --secondary-bg: #16213e;
+    --accent-color: #00f9ff;
+    --text-color: #e0e0e0;
+    --light-bg: #2a3b5e;
+    
+    /* Rank Colors */
+    --rank1-color: #24ff00; /* Green */
+    --rank2-color: #ffc600; /* Yellow */
+    --rank3-color: #ff8c00; /* Orange */
+    --rank-last-color: #ff005c; /* Red */
+
+    --white: #fff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    overflow: hidden; /* Prevent scrolling on body */
+}
+
+/* --- LAYOUT & MAIN CONTAINERS --- */
+#app-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+.container { 
+    flex-grow: 1; 
+    padding: 2rem; 
+    overflow-y: auto; /* Allow scrolling WITHIN containers */
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+header { 
+    padding: 1rem 2rem; 
+    background-color: var(--secondary-bg); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    flex-shrink: 0; /* Prevent header from shrinking */
+    z-index: 10; /* Keep header above scrolling content */
+    position: relative; /* Needed for z-index */
+}
+.hidden { display: none !important; }
+
+
+/* --- GAME SCREEN LAYOUT --- */
+#game-container {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* Sidebar fixed width */
+    grid-template-rows: 1fr; 
+    padding: 20px;
+    gap: 20px;
+    flex-grow: 1;    
+    overflow: hidden; /* Prevent this container from scrolling */
+}
+
+#scoreboard-container { 
+    display: flex; 
+    flex-direction: column; 
+    overflow-y: auto; /* Allow scoreboard to scroll if teams exceed height */
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+#game-board {
+    position: relative; /* For potential absolute positioned elements inside */
+    height: 100%; /* Fill the grid cell */
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    background: rgba(0,0,0,0.2);
+    overflow: hidden; 
+}
+
+.square {
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: transform 0.6s, box-shadow 0.3s, opacity 0.5s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--light-bg); /* Default background */
+    font-size: 1.5rem; /* Default size for numbers or emojis */
+    color: var(--white);
+    text-align: center;
+}
+.square:hover { 
+    transform: scale(1.05); 
+    box-shadow: 0 0 25px var(--accent-color); 
+    z-index: 10; /* Bring to front on hover */
+}
+/* Flip animation */
+.square.flipped { 
+    transform: rotateY(180deg) scale(0.5); 
+    opacity: 0; 
+    pointer-events: none; 
+    cursor: default;
+}
+
+
+/* --- SCOREBOARD --- */
+#scoreboard { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+.team { 
+    background: linear-gradient(145deg, #1e2a4a, #141c33); 
+    padding: 15px 20px; 
+    border-radius: 10px; 
+    border: 3px solid var(--accent-color); 
+    box-shadow: 0 0 15px rgba(0, 249, 255, 0.5); 
+    transition: all 0.3s ease; 
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Push info and score apart */
+    align-items: center; /* Vertically align items */
+}
+.team.active-turn { 
+    transform: scale(1.05); /* Slightly smaller scale than board hover */
+    box-shadow: 0 0 25px var(--accent-color);
+}
+
+/* Rank Colors */
+.team.rank-1 { border-color: var(--rank1-color); box-shadow: 0 0 20px var(--rank1-color); }
+.team.rank-2 { border-color: var(--rank2-color); box-shadow: 0 0 20px var(--rank2-color); }
+.team.rank-3 { border-color: var(--rank3-color); box-shadow: 0 0 20px var(--rank3-color); }
+.team.rank-last { border-color: var(--rank-last-color); box-shadow: 0 0 20px var(--rank-last-color); }
+
+.team-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    font-size: 1.1rem; /* Slightly smaller for better fit */
+    text-transform: uppercase; 
+    font-family: 'Russo One', sans-serif; 
+    white-space: nowrap; /* Prevent name wrapping */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ... if name too long */
+    flex-shrink: 1; /* Allow info to shrink if needed */
+}
+.team-avatar { 
+    font-size: 1.8rem; /* Slightly smaller */
+    flex-shrink: 0; /* Don't shrink avatar */
+}
+.team-name{
+     overflow: hidden;
+     text-overflow: ellipsis;
+}
+
+.team-score { 
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem; /* Slightly smaller */
+    font-weight: 700; 
+    text-align: right; 
+    color: var(--white);
+    text-shadow: 0 0 5px var(--white), 0 0 10px var(--accent-color);
+    flex-shrink: 0; /* Prevent score from shrinking */
+    margin-left: 10px; /* Add space between name and score */
+}
+/* Make game menu button stick to bottom */
+#scoreboard-container #game-menu-btn { 
+    margin-top: auto; /* Pushes button to bottom */
+    margin-bottom: 5px; /* Add some space at the very bottom */
+    width: 100%; 
+}
+
+/* --- SETUP & CREATOR SCREENS --- */
+.menu-content { 
+    width: 100%; 
+    max-width: 900px; /* Wider for creator */
+    text-align: center; 
+}
+.menu-section { 
+    background-color: var(--secondary-bg); 
+    padding: 1.5rem; /* Slightly less padding */
+    border-radius: 12px; 
+    margin-top: 1.5rem; 
+    text-align: left; /* Align section content left */
+}
+.menu-section h2, .menu-section h3, .menu-section h4 {
+     text-align: center; /* Center headings within sections */
+     margin-bottom: 1rem;
+}
+
+.game-options { 
+    display: flex; 
+    justify-content: center; 
+    gap: 1.5rem; 
+    margin-top: 1rem; 
+    font-size: 1.1rem; 
+    flex-wrap: wrap; /* Allow options to wrap */
+}
+#saved-themes-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+    margin-top: 1.5rem; 
+}
+.theme-button-group { 
+    display: flex; 
+    gap: 10px; 
+}
+.theme-button-group .load-theme-btn, .load-theme-btn { 
+    flex-grow: 1; 
+    text-align: center; /* Center text in load buttons */
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    padding: 12px 20px; /* Adjust padding */
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-button-group .load-theme-btn:hover, .load-theme-btn:hover {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+}
+.edit-theme-btn {
+     flex-grow: 0; /* Don't let edit button grow */
+     padding: 12px 15px;
+}
+
+/* --- TEAM SETUP --- */
+#team-setup-modal .modal-content { 
+    width: 90%; 
+    max-width: 650px; 
+}
+#team-setup-modal .form-group { 
+    margin-bottom: 1.5rem; 
+    text-align: left; 
+}
+#team-setup-modal label { 
+    font-size: 1.1rem; /* Adjust font size */
+    display: block; 
+    margin-bottom: 0.5rem; 
+}
+#team-setup-modal input[type="text"], 
+#team-setup-modal select {
+    font-size: 1.1rem;
+    padding: 10px 12px;
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid var(--accent-color);
+    background-color: var(--primary-bg);
+    color: var(--white);
+}
+
+/* --- MODALS --- */
+.modal { 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000; 
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+/* Fade-out animation (applied by JS) */
+.modal.fade-out { 
+    opacity: 0; 
+} 
+
+.modal-content { 
+    background-color: var(--secondary-bg); 
+    padding: 2rem; /* Consistent padding */
+    border-radius: 12px; 
+    box-shadow: 0 5px 25px rgba(0,0,0,0.5); 
+    text-align: center; 
+    max-height: 90vh; /* Prevent modal being too tall */
+    overflow-y: auto; /* Allow content to scroll if needed */
+    max-width: 90vw; /* Prevent modal being too wide */
+}
+
+/* --- Fullscreen Event Modal --- */
+#fullscreen-event { 
+    cursor: pointer; 
+}
+.fullscreen-content { 
+    width: 100%; height: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 1rem; /* Less padding */
+}
+#fullscreen-image { 
+    max-width: 90%; /* Allow larger image */
+    max-height: 75%; 
+    object-fit: contain; 
+    border-radius: 15px; 
+    margin-bottom: 1rem; /* Add space below image */
+}
+#fullscreen-message { 
+    background-color: rgba(0,0,0,0.7); 
+    padding: 1rem 1.5rem; 
+    border-radius: 10px; 
+    font-size: 1.8rem; /* Adjust size */
+    font-family: 'Russo One', sans-serif; 
+    color: var(--white);
+    text-shadow: 0 0 5px var(--accent-color);
+}
+
+/* --- Game Over Modal --- */
+.game-over-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    border: 3px solid var(--accent-color); 
+    box-shadow: 0 0 30px var(--accent-color);
+}
+.game-over-content h1 {
+    font-family: 'Russo One', sans-serif;
+    color: var(--accent-color);
+    font-size: 3rem; /* Adjust size */
+    text-transform: uppercase;
+    margin-bottom: 0; /* Reduce space */
+}
+.winner-trophy { 
+    font-size: 5rem; /* Adjust size */
+    animation: bounce 2s infinite; 
+    margin: 0; /* Reduce space */
+}
+@keyframes bounce { 
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
+    40% {transform: translateY(-20px);} 
+    60% {transform: translateY(-10px);} 
+}
+.winner-details { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+#winner-avatar { 
+    font-size: 3.5rem; /* Adjust size */
+}
+#winner-name { 
+    font-size: 2rem; /* Adjust size */
+}
+#winner-score { 
+    font-family: 'Russo One', sans-serif; 
+    font-size: 2.5rem; /* Adjust size */
+    color: var(--white); 
+}
+
+/* --- Transfer Points Modal --- */
+#transfer-team-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.team-transfer-btn {
+    padding: 1rem;
+    font-size: 1.2rem;
+}
+
+/* --- BUTTONS & INPUTS --- */
+button {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    border: 2px solid var(--accent-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap; /* Prevent button text wrapping */
+}
+button:hover:not(:disabled) { /* Don't apply hover if disabled */
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+button:disabled {
+     cursor: not-allowed;
+     opacity: 0.6;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 5px; /* Add space above */
+    text-align: center; /* Center text */
+    min-width: 150px; /* Give it some base width */
+    overflow: hidden; /* Hide long filenames initially */
+    text-overflow: ellipsis; /* Show ... for long names */
+    white-space: nowrap;
+}
+.file-label:hover {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+}
+/* Hide the actual file input */
+#theme-creator-container input[type="file"] {
+    display: none;
+}
+/* Grid for Background/Music uploads */
+.image-upload-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+.upload-category {
+    background-color: var(--secondary-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex; /* Use flex for better control */
+    flex-direction: column; /* Stack elements vertically */
+}
+.upload-category p {
+    margin-bottom: 0.5rem; /* Space below text */
+}
+
+.creator-actions {
+    margin-top: 2rem; /* More space above action buttons */
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-bg); /* Separator line */
+    text-align: center; /* Center buttons */
+}
+.creator-actions button {
+    margin: 0 10px;
+    padding: 12px 25px; /* Larger buttons */
+    font-size: 1.1rem;
+}
+
+/* Thumbnail Previews */
+.image-preview-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--primary-bg);
+    border-radius: 8px;
+    min-height: 50px; /* Ensure it has some height even when empty */
+}
+.img-thumbnail {
+    width: 80px; /* Smaller thumbnails */
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--accent-color);
+}
+
+/* --- HIGH SCORES --- */
+#high-score-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0; /* Add margin */
+    font-family: 'Orbitron', monospace; 
+    font-size: 1.2rem; /* Adjust size */
+    color: var(--white);
+    max-height: 300px; /* Limit height */
+    overflow-y: auto; /* Allow scrolling */
+}
+.highscore-entry {
+    display: flex;
+    align-items: baseline;
+    padding: 8px 10px;
+    border-bottom: 1px dashed rgba(0, 249, 255, 0.2); 
+    transition: background-color 0.2s;
+}
+.highscore-entry:last-child { border-bottom: none; }
+.highscore-entry:hover { background-color: rgba(0, 249, 255, 0.1); }
+
+.hs-rank { color: var(--accent-color); width: 3rem; text-align: right; padding-right: 1rem; flex-shrink: 0; }
+.hs-score { color: var(--rank1-color); font-weight: 700; letter-spacing: 1px; width: 5rem; /* Give score fixed width */ flex-shrink: 0;}
+.hs-team-name { padding-left: 1rem; color: var(--text-color); flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hs-profile-name { font-size: 0.9rem; color: var(--accent-color); font-style: italic; margin-left: 1rem; flex-shrink: 0; }
+
+#setup-container .menu-section button.active { /* Specificity for HS buttons */
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+/* --- EMOJI SELECTION --- */
+#emoji-select-modal .modal-content { max-width: 800px; }
+#emoji-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); 
+    gap: 10px; 
+    max-height: 400px; 
+    overflow-y: auto; 
+    margin-top: 1rem; 
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+.emoji-choice {
+    font-size: 2rem;
+    background: var(--light-bg);
+    border: 2px solid transparent; /* Use transparent border */
+    transition: all 0.2s ease;
+    padding: 5px;
+    border-radius: 6px;
+}
+.emoji-choice.selected {
+    border-color: var(--rank1-color);
+    background-color: var(--primary-bg);
+    box-shadow: 0 0 10px var(--rank1-color);
+}
+.emoji-choice:hover:not(.selected){
+     background-color: var(--secondary-bg);
+     transform: scale(1.1);
+}
+
+/* --- AVATAR SELECTION --- */
+#avatar-select-modal .modal-content { max-width: 700px; }
+#avatar-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.avatar-tab-btn {
+    padding: 8px 15px;
+    border-radius: 6px 6px 0 0;
+    border: 2px solid transparent;
+    border-bottom: none;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+.avatar-tab-btn:not(:disabled):hover { background-color: #3a4b6e; }
+.avatar-tab-btn.active { background-color: var(--secondary-bg); border-color: var(--accent-color); }
+.avatar-tab-btn:disabled { color: #666; background-color: #111a2e; cursor: not-allowed; }
+
+#avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+.avatar-choice-btn {
+    font-size: 2.5rem;
+    padding: 5px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-color: var(--light-bg);
+    transition: all 0.2s ease;
+}
+.avatar-choice-btn:hover { transform: scale(1.1); border-color: var(--text-color); }
+.avatar-choice-btn.selected { border-color: var(--accent-color); box-shadow: 0 0 15px var(--accent-color); }
+
+/* --- MATH QUESTION MODAL --- */
+#question-modal .modal-content { max-width: 700px; }
+#question-timer {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    color: var(--rank-last-color);
+    margin-bottom: 1rem;
+    height: 40px; /* Reserve space */
+}
+#question-content h2 {
+    font-size: 1.8rem; /* Adjust size */
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+}
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.option-btn {
+    padding: 1rem; /* Adjust padding */
+    font-size: 1.5rem; /* Adjust size */
+    font-family: 'Russo One', sans-serif;
+}
+
+/* --- NEW DUNGEON STYLES --- */
+#dungeon-container {
+    background: linear-gradient(145deg, #1c0b2e, #0f061a);
+    border: 5px solid #4a0e6c; /* Deep purple border */
+    box-shadow: inset 0 0 30px rgba(74, 14, 108, 0.8);
+    display: flex; /* Override .container default */
+    justify-content: center;
+    align-items: center;
+}
+#dungeon-content {
+    background: rgba(13, 13, 26, 0.7); /* Semi-transparent dark bg */
+    padding: 2rem;
+    border-radius: 15px;
+    border: 2px solid #a000ff;
+    box-shadow: 0 0 25px rgba(160, 0, 255, 0.6);
+}
+
+#dungeon-content h2 {
+    color: #a000ff; /* Purple accent */
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 10px #a000ff;
+    font-size: 2.5rem; /* Larger heading */
+    margin-bottom: 1rem;
+}
+#dungeon-content p {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.dungeon-choice-btn {
+    background-color: #3d1b58;
+    border-color: #a000ff;
+    padding: 15px 30px;
+    font-size: 1.3rem;
+    font-family: 'Russo One', sans-serif;
+    box-shadow: 0 0 15px rgba(160, 0, 255, 0.5);
+    color: var(--text-color);
+}
+
+.dungeon-choice-btn:hover {
+    background-color: #a000ff;
+    color: #fff;
+    box-shadow: 0 0 25px #a000ff;
+    transform: scale(1.05);
+}
