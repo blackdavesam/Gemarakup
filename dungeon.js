@@ -223,6 +223,7 @@ function initiateDangerousGamble() {
 }
 
 // --- UPDATED to Best of 7 ---
+// This replaces the function in dungeon.js
 function resolveGamble(playerTeam, opponentId, amount) {
      const opponentTeamIndex = gameState.teams.findIndex(t => t.dbId == opponentId);
      if (opponentTeamIndex === -1) {
@@ -233,12 +234,11 @@ function resolveGamble(playerTeam, opponentId, amount) {
      }
      const opponentTeam = gameState.teams[opponentTeamIndex];
 
-     // --- NEW Best of 7 Logic ---
+     // --- Best of 7 Logic (This part is fine) ---
      let playerWins = 0;
      let opponentWins = 0;
-     const rollsHistory = []; // To store text of each roll
+     const rollsHistory = []; 
 
-     // Loop until one player gets 4 wins
      while (playerWins < 4 && opponentWins < 4) {
         const playerRoll = Math.floor(Math.random() * 20) + 1;
         const opponentRoll = Math.floor(Math.random() * 20) + 1;
@@ -257,22 +257,32 @@ function resolveGamble(playerTeam, opponentId, amount) {
         rollsHistory.push(`<p style="margin: 2px 0; opacity: 0.8;">${roundText}</p>`);
      }
      
-     // --- Build Result Display ---
+     // --- Build Result Display (This is the fixed part) ---
      let resultText = `<h2>Final Score: ${playerWins} to ${opponentWins}</h2>`;
 
      if (playerWins > opponentWins) {
-          // Player wins the gamble
-          resultText += `<h3 style="color: var(--rank1-color); font-weight: bold;">You Win! You take ${amount} points!</h3>`;
-          playerTeam.score += amount;
-          const pointsLost = Math.min(opponentTeam.score, amount); // Can't take more than they have
-          opponentTeam.score -= pointsLost;
+          // Player wins: Take points from opponent
+          // FIX: Calculate the *actual* amount that can be taken
+          const pointsToTake = Math.min(opponentTeam.score, amount); 
+          
+          // FIX: Update the result message to show the *actual* points
+          resultText += `<h3 style="color: var(--rank1-color); font-weight: bold;">You Win! You take ${pointsToTake} points!</h3>`;
+          
+          // FIX: Apply the *actual* amount to both players
+          playerTeam.score += pointsToTake;
+          opponentTeam.score -= pointsToTake;
           if(sfx.highGain) sfx.highGain.play();
      } else {
-          // Opponent wins the gamble
-          resultText += `<h3 style="color: var(--rank-last-color); font-weight: bold;">You Lose! You give ${amount} points!</h3>`;
-          opponentTeam.score += amount;
-          const pointsLost = Math.min(playerTeam.score, amount); // Can't give more than you have
-          playerTeam.score -= pointsLost;
+          // Opponent wins: Give points to opponent
+          // FIX: Calculate the *actual* amount that can be given
+          const pointsToGive = Math.min(playerTeam.score, amount);
+          
+          // FIX: Update the result message to show the *actual* points
+          resultText += `<h3 style="color: var(--rank-last-color); font-weight: bold;">You Lose! You give ${pointsToGive} points!</h3>`;
+          
+          // FIX: Apply the *actual* amount to both players
+          opponentTeam.score += pointsToGive;
+          playerTeam.score -= pointsToGive;
            if(sfx.highLoss) sfx.highLoss.play();
      }
 
@@ -288,5 +298,5 @@ function resolveGamble(playerTeam, opponentId, amount) {
      setTimeout(() => {
           hideModal(gambleModal);
           exitDungeon();
-     }, 6000); // Increased delay to 6 seconds
+     }, 6000);
 }

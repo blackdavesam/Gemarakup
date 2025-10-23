@@ -589,6 +589,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameState.pendingEventForAnnul = null;
 
         shuffledDeck = createShuffledDeck(numberOfSquares);
+        window.shuffledDeck = shuffledDeck; // <-- ADD THIS LINE
 
         if (activeGameTheme.backgroundImageData) {
             document.body.style.backgroundImage = `url(${activeGameTheme.backgroundImageData})`;
@@ -1882,11 +1883,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelSettingsBtn.addEventListener('click', () => hideModal(gameSettingsModal));
     gameOverMenuBtn.addEventListener('click', resetToMenu);
 
-    // Fullscreen Modal Default Click
-    fullscreenEvent.addEventListener('click', () => {
-        hideModal(fullscreenEvent);
-        setTimeout(endTurn, 300);
-    });
+    
 
     // --- 9. INITIALIZE THE APP ---
     initDB();
