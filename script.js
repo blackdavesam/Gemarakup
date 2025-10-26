@@ -328,16 +328,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? store.put({ ...savableTheme, id: currentTheme.id })
                 : store.add(savableTheme);
 
-            request.onsuccess = () => {
+            request.onsuccess = (e) => {
                 alert(`Theme "${themeName}" ${currentTheme.id ? 'updated' : 'saved'}!`);
-                loadThemes();
-                if (!currentTheme.id) {
+                
+                // Get the ID of the new/updated theme
+                const savedThemeId = e.target.result || currentTheme.id;
+
+                // Auto-export if it's a new theme
+                if (!currentTheme.id && savedThemeId) {
                      triggerThemeExport(savableTheme, themeName);
                 }
-                 currentTheme = {
-                    name: '', images: {}, palette: [], emojis: [], emojiMode: 'overlay',
-                    backgroundImageFile: null, backgroundMusicFile: null, soundFiles: {}, soundData: {}
+
+                // --- THIS IS THE FIX ---
+                // Instead of resetting currentTheme, we update it with the
+                // data we just saved, so editing can continue.
+                currentTheme = {
+                    id: savedThemeId,
+                    name: savableTheme.name,
+                    palette: savableTheme.palette,
+                    emojis: savableTheme.emojis,
+                    emojiMode: savableTheme.emojiMode,
+                    backgroundImageData: savableTheme.backgroundImageData,
+                    backgroundMusicData: savableTheme.backgroundMusicData,
+                    imageCategoryData: savableTheme.images, // Use the saved Base64 images
+                    soundData: savableTheme.sounds,         // Use the saved Base64 sounds
+                    images: {}, // Clear the temporary file upload state
+                    soundFiles: {}  // Clear the temporary file upload state
                 };
+                
+                // Refresh the creator inputs to show all saved thumbnails
+                renderThemeCreatorInputs();
+                
+                // Refresh the main menu's list of saved themes
+                loadThemes();
             };
             request.onerror = (e) => {
                  console.error("Error saving/updating theme:", e.target.error);
@@ -1234,15 +1257,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     const files = Array.from(e.target.files);
                     const targetCardName = e.target.dataset.cardName;
                     if (!targetCardName || files.length === 0) return;
-                    if (files.length > 5) {
-                        alert("You can only select up to 5 images per event.");
-                        e.target.value = null; return;
+
+                    // --- FIX: Check against TOTAL images ---
+                    const existingImages = currentTheme.imageCategoryData?.[targetCardName] || [];
+                    if (files.length + existingImages.length > 5) {
+                        alert("You can only have a maximum of 5 images per event.");
+                        e.target.value = null; 
+                        return;
                     }
+
+                    // Save the new File objects
                     currentTheme.images[targetCardName] = files;
 
                     const previewContainer = document.getElementById(`preview-${safeCardNameId}`);
                     if (previewContainer) {
-                        previewContainer.innerHTML = '';
+                        // --- FIX: Rerender ALL thumbnails for this category ---
+                        previewContainer.innerHTML = ''; // Wipe container first
+                        
+                        // 1. Render existing Base64 images
+                        existingImages.forEach(imgData => {
+                            if (imgData) {
+                                const img = document.createElement('img');
+                                img.src = imgData;
+                                img.className = 'img-thumbnail';
+                                img.alt = "Saved preview";
+                                previewContainer.appendChild(img);
+                            }
+                        });
+
+                        // 2. Render new File objects
                         files.forEach(file => {
                              if (!file.type.startsWith('image/')) return;
                             const reader = new FileReader();
@@ -1250,7 +1293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const img = document.createElement('img');
                                 img.src = event.target.result;
                                 img.className = 'img-thumbnail';
-                                img.alt = "Image preview";
+                                img.alt = "New preview";
                                 previewContainer.appendChild(img);
                             };
                             reader.onerror = () => console.error("Error reading image file for preview.");
@@ -1822,42 +1865,78 @@ document.addEventListener('DOMContentLoaded', () => {
     globalHsBtn.addEventListener('click', () => loadHighScores('global'));
 
     // Theme Creator Buttons
-    startWithCustomBtn.addEventListener('click', () => {
-        console.log("Starting with custom theme...");
-        activeGameTheme = {
-            name: "Custom Theme",
-            palette: currentTheme.palette.length > 0 ? currentTheme.palette : DEFAULT_COLORS,
-            emojis: currentTheme.emojis,
-            emojiMode: document.querySelector('input[name="emoji-mode"]:checked')?.value || 'overlay',
-            backgroundImageData: currentTheme.backgroundImageData,
-            backgroundMusicData: currentTheme.backgroundMusicData,
-            images: { ...currentTheme.imageCategoryData },
-            sounds: { ...currentTheme.soundData }
-        };
-        
-        if (currentTheme.backgroundImageFile || currentTheme.backgroundMusicFile || Object.keys(currentTheme.images).length > 0 || Object.keys(currentTheme.soundFiles).length > 0) {
-             alert("Please save your theme first before playing with it!");
-             return;
-        }
+    startWithCustomBtn.addEventListener('click', async () => { // Make it async
+        console.log("Starting with custom theme (processing files)...");
 
-        if (!activeGameTheme.backgroundImageData) {
+        // 1. Check for background
+        if (!currentTheme.backgroundImageFile && !currentTheme.backgroundImageData) {
             alert("A background image is required to play.");
             return;
         }
 
-        showModal(gameSettingsModal);
-    });
-    saveCustomThemeBtn.addEventListener('click', handleSaveCurrentTheme);
-    document.getElementById('select-emojis-btn').addEventListener('click', openEmojiSelector);
-    document.getElementById('confirm-emojis-btn').addEventListener('click', () => {
-        const emojiModal = document.getElementById('emoji-select-modal');
-        const selectedBtns = emojiModal.querySelectorAll('#emoji-grid .selected');
-        currentTheme.emojis = Array.from(selectedBtns).map(btn => btn.textContent);
-        document.getElementById('emoji-display-options').classList.toggle('hidden', currentTheme.emojis.length === 0);
-        hideModal(emojiModal);
-        alert(`${currentTheme.emojis.length} emojis selected!`);
-    });
+        // 2. Show a temporary "loading" message
+        const originalBtnText = startWithCustomBtn.textContent;
+        startWithCustomBtn.textContent = "Processing Images...";
+        startWithCustomBtn.disabled = true;
 
+        try {
+            // 3. Prepare all data, converting files to Base64
+            const bgData = currentTheme.backgroundImageFile
+                ? await fileToBase64(currentTheme.backgroundImageFile)
+                : currentTheme.backgroundImageData;
+
+            const musicData = currentTheme.backgroundMusicFile
+                ? await fileToBase64(currentTheme.backgroundMusicFile)
+                : currentTheme.backgroundMusicData;
+
+            // 4. Process Event Images
+            // Start with images from the loaded theme (if editing)
+            const processedImages = { ...currentTheme.imageCategoryData };
+            // Overwrite with any new files you've just uploaded
+            for (const cardName in currentTheme.images) {
+                const files = currentTheme.images[cardName];
+                if (Array.isArray(files) && files.length > 0) {
+                    processedImages[cardName] = await Promise.all(
+                        files.map(file => fileToBase64(file))
+                    );
+                }
+            }
+
+            // 5. Process Sounds
+            // Start with sounds from loaded theme
+            const processedSounds = { ...currentTheme.soundData };
+            // Overwrite with new files
+            for (const sfxName in currentTheme.soundFiles) {
+                const file = currentTheme.soundFiles[sfxName];
+                if (file) {
+                    processedSounds[sfxName] = await fileToBase64(file);
+                }
+            }
+
+            // 6. Build the activeGameTheme for this session
+            activeGameTheme = {
+                name: "Custom Theme (Unsaved)",
+                palette: currentTheme.palette.length > 0 ? currentTheme.palette : DEFAULT_COLORS,
+                emojis: currentTheme.emojis,
+                emojiMode: document.querySelector('input[name="emoji-mode"]:checked')?.value || 'overlay',
+                backgroundImageData: bgData,
+                backgroundMusicData: musicData,
+                images: processedImages,
+                sounds: processedSounds
+            };
+
+            // 7. Reset button and show settings
+            startWithCustomBtn.textContent = originalBtnText;
+            startWithCustomBtn.disabled = false;
+            showModal(gameSettingsModal);
+
+        } catch (error) {
+            console.error("Error processing theme files for play:", error);
+            alert("An error occurred while preparing the theme. See console for details.");
+            startWithCustomBtn.textContent = originalBtnText;
+            startWithCustomBtn.disabled = false;
+        }
+    });
     // Game Screen Buttons
     gameMenuBtn.addEventListener('click', () => {
          if (confirm("Are you sure you want to end the current game and return to the menu?")) {
