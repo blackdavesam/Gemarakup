@@ -16,7 +16,6 @@
             <h1>Gemarakup!</h1>
             <div>
                 <button id="change-profile-btn" class="hidden">Change Profile</button>
-                <button id="creator-nav-btn">Theme Creator</button>
                 <button id="main-menu-nav-btn" class="hidden">Main Menu</button>
             </div>
         </header>
@@ -35,23 +34,17 @@
         </div>
 
         <div id="setup-container" class="container">
-            <div class="menu-content">
+             <div class="menu-content">
                 <div class="menu-section">
-                    <h2>Gemarakup Classic</h2>
-                    <p>A balanced set of colors and events for a classic game.</p>
-                    <button id="default-start-btn" style="margin-top: 1rem;">Start Game</button>
-                </div>
-
-                <div class="menu-section">
-                    <h2>Import a Theme File</h2>
-                    <p>Load a theme (.json) from your computer.</p>
-                    <button id="import-theme-btn" style="margin-top: 1rem;">Import Theme</button>
-                    <input type="file" id="theme-importer" class="hidden" accept=".json">
+                    <h2>Select a Theme</h2>
+                    <p>These themes are built into the game.</p>
+                    <div id="built-in-themes-list" style="margin-top: 1rem;">
+                        </div>
                 </div>
 
                 <div class="menu-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                         <h2>醇 Hall of Fame 醇</h2>
+                         <h2>荘 Hall of Fame 荘</h2>
                          <div>
                              <button id="class-hs-btn" class="active">Class Ranking</button>
                              <button id="global-hs-btn">Global Ranking</button>
@@ -60,90 +53,6 @@
                     <ol id="high-score-list"></ol>
                     <p id="no-high-scores-msg" class="hidden">No high scores recorded yet. Be the first!</p>
                 </div>
-
-                <div class="menu-section">
-                    <h2>Play with a Saved Theme</h2>
-                    <div id="saved-themes-list"></div>
-                    <p id="no-saved-themes-msg" class="hidden" style="margin-top: 1rem;">You have no saved themes yet.</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="theme-creator-container" class="container hidden">
-             <div id="image-customization-panel">
-                <h2>Customize Images & Colors</h2>
-                <p>The game's color palette will be automatically generated from your background image.</p>
-                <div class="image-upload-grid">
-                     <div class="upload-category">
-                        <p><strong>Required:</strong> Background Image</p>
-                        <label for="image-input" class="file-label">Choose Background</label>
-                        <input type="file" id="image-input" accept="image/*" class="hidden">
-                    </div>
-                    <div class="upload-category">
-                        <p>Background Music (Optional)</p>
-                        <label for="music-input" class="file-label">Choose Music</label>
-                        <input type="file" id="music-input" accept="audio/*" class="hidden">
-                    </div>
-                </div>
-
-                <h2 style="margin-top: 2rem;">Customize Event Images</h2>
-                <p>Upload 1-5 images for each game event. One will be chosen randomly during gameplay.</p>
-                <div id="specific-image-uploads-container">
-                     </div>
-            </div>
-
-            <h2 style="margin-top: 2rem;">Customize Sound Effects (Optional)</h2>
-            <p>Upload your own audio files (.mp3, .wav, .ogg) for game events. This stores them for offline use.</p>
-            <div class="image-upload-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-                <div class="upload-category">
-                    <p>Small Point Gain (e.g., +5)</p>
-                    <label for="sfx-input-lowGain" class="file-label">Choose Sound</label>
-                    <input type="file" id="sfx-input-lowGain" class="sfx-input hidden" data-sfx-name="lowGain" accept="audio/*">
-                </div>
-                <div class="upload-category">
-                    <p>Large Point Gain (e.g., +20)</p>
-                    <label for="sfx-input-highGain" class="file-label">Choose Sound</label>
-                    <input type="file" id="sfx-input-highGain" class="sfx-input hidden" data-sfx-name="highGain" accept="audio/*">
-                </div>
-                <div class="upload-category">
-                    <p>Small Point Loss (e.g., -5)</p>
-                    <label for="sfx-input-lowLoss" class="file-label">Choose Sound</label>
-                    <input type="file" id="sfx-input-lowLoss" class="sfx-input hidden" data-sfx-name="lowLoss" accept="audio/*">
-                </div>
-                <div class="upload-category">
-                    <p>Large Point Loss (e.g., -20)</p>
-                    <label for="sfx-input-highLoss" class="file-label">Choose Sound</label>
-                    <input type="file" id="sfx-input-highLoss" class="sfx-input hidden" data-sfx-name="highLoss" accept="audio/*">
-                </div>
-                <div class="upload-category">
-                    <p>Special Event / Dungeon</p>
-                    <label for="sfx-input-special" class="file-label">Choose Sound</label>
-                    <input type="file" id="sfx-input-special" class="sfx-input hidden" data-sfx-name="special" accept="audio/*">
-                </div>
-                <div class="upload-category">
-                    <p>Game Over</p>
-                    <label for="sfx-input-gameOver" class="file-label">Choose Sound</label>
-                    <input type="file" id="sfx-input-gameOver" class="sfx-input hidden" data-sfx-name="gameOver" accept="audio/*">
-                </div>
-            </div>
-
-            <div class="menu-section">
-                <h2>Customize Board Squares</h2>
-                <p style="margin-top: 1rem;">Optionally, choose up to 8 emojis to display on the game board squares.</p>
-                <button id="select-emojis-btn" style="margin-top: 0.5rem;">Select Board Emojis</button>
-
-                <div id="emoji-display-options" style="margin-top: 1.5rem;" class="hidden">
-                    <h4>Emoji Display Style</h4>
-                    <div class="game-options" style="justify-content: flex-start; gap: 1rem;">
-                         <label><input type="radio" name="emoji-mode" value="overlay" checked> Overlay (On top of colors)</label>
-                         <label><input type="radio" name="emoji-mode" value="replace"> Replace (Uses neutral background)</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="creator-actions" style="margin-top: 1.5rem;">
-                <button id="start-with-custom-btn">Play with this Theme</button>
-                <button id="save-custom-theme-btn">Save this Theme</button>
             </div>
         </div>
 
@@ -155,13 +64,7 @@
             <div id="game-board"></div>
         </div>
 
-        <div id="dungeon-container" class="container hidden" style="background-color: #0d0d1a;">
-             <div class="menu-content" id="dungeon-content" style="background: none; box-shadow: none; border: none; padding: 0;">
-                 <h2>Entering the depths...</h2>
-            </div>
-        </div>
-
-    </div> <div id="game-settings-modal" class="modal hidden">
+        </div> <div id="game-settings-modal" class="modal hidden">
         <div class="modal-content">
             <h2>Game Settings</h2>
              <div class="menu-section" style="background: none; padding: 1rem 0;">
@@ -207,40 +110,34 @@
     </div>
 
     <div id="team-setup-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 650px;"></div>
+        <div class="modal-content" style="max-width: 650px;">
+            </div>
     </div>
 
     <div id="avatar-select-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 700px;"></div>
-    </div>
-
-    <div id="emoji-select-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 800px;">
-            <h2>Select Up to 8 Emojis</h2>
-            <p>Click an emoji to select it. Click again to deselect.</p>
-            <div id="emoji-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; margin-top: 1rem; padding: 10px;"></div>
-            <div class="team-setup-actions" style="margin-top: 1.5rem;">
-                <button id="confirm-emojis-btn">Confirm Selections</button>
+        <div class="modal-content" style="max-width: 700px;">
             </div>
-        </div>
     </div>
 
     <div id="transfer-points-modal" class="modal hidden">
         <div class="modal-content">
             <h2 id="transfer-title"></h2>
             <p id="transfer-description"></p>
-            <div id="transfer-team-buttons"></div>
+            <div id="transfer-team-buttons">
+                </div>
         </div>
     </div>
 
     <div id="event-modal" class="modal hidden">
-        <div class="modal-content" id="event-message"></div>
+        <div class="modal-content" id="event-message">
+            </div>
     </div>
 
     <div id="fullscreen-event" class="modal hidden">
         <div class="fullscreen-content">
             <img id="fullscreen-image" src="" alt="Event Image">
-            <div id="fullscreen-message"></div>
+            <div id="fullscreen-message">
+                </div>
         </div>
     </div>
 
@@ -260,7 +157,8 @@
     <div id="question-modal" class="modal hidden">
         <div class="modal-content">
             <div id="question-timer"></div>
-            <div id="question-content"></div>
+            <div id="question-content">
+                </div>
         </div>
     </div>
 
@@ -307,8 +205,7 @@
     <script src="MathQuestion.js"></script>
     <script src="howler.min.js"></script> 
     
-    <script src="script.js"></script> 
-    
-    <script src="dungeon.js"></script>    
-</body>
+    <script src="theme-data.js"></script>      
+    <script src="script.js?v=5"></script>      
+    </body>
 </html>

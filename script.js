@@ -7,43 +7,36 @@ document.addEventListener('DOMContentLoaded', () => {
         PAGES: {
             PROFILE: 'profile',
             SETUP: 'setup',
-            CREATOR: 'creator',
-            GAME: 'game',
-            DUNGEON: 'dungeon'
+            GAME: 'game'
+            // DUNGEON page removed
         }
     };
 
     // --- 1. GET ALL UI ELEMENTS ---
     const profileContainer = document.getElementById('profile-container');
     const setupContainer = document.getElementById('setup-container');
-    const themeCreatorContainer = document.getElementById('theme-creator-container');
+    // themeCreatorContainer removed
     const gameContainer = document.getElementById('game-container');
-    const dungeonContainer = document.getElementById('dungeon-container');
+    // dungeonContainer removed
 
     const changeProfileBtn = document.getElementById('change-profile-btn');
-    const creatorNavBtn = document.getElementById('creator-nav-btn');
+    // creatorNavBtn removed
     const mainMenuNavBtn = document.getElementById('main-menu-nav-btn');
-
-    const savedThemesList = document.getElementById('saved-themes-list');
-    const noThemesMsg = document.getElementById('no-saved-themes-msg');
 
     const highScoreList = document.getElementById('high-score-list');
     const noHighScoresMsg = document.getElementById('no-high-scores-msg');
     const classHsBtn = document.getElementById('class-hs-btn');
     const globalHsBtn = document.getElementById('global-hs-btn');
 
-    const imageInput = document.getElementById('image-input');
-    const musicInput = document.getElementById('music-input');
     const board = document.getElementById('game-board');
     const scoreboard = document.getElementById('scoreboard');
-    const defaultStartBtn = document.getElementById('default-start-btn');
-    const startWithCustomBtn = document.getElementById('start-with-custom-btn');
-    const saveCustomThemeBtn = document.getElementById('save-custom-theme-btn');
+    
+    // builtInThemesList is the new container
+    const builtInThemesList = document.getElementById('built-in-themes-list');
+
+    // old theme/import buttons removed
     const gameMenuBtn = document.getElementById('game-menu-btn');
     const backgroundMusic = document.getElementById('background-music');
-
-    const importThemeBtn = document.getElementById('import-theme-btn');
-    const themeImporter = document.getElementById('theme-importer');
 
     // Modals
     const gameSettingsModal = document.getElementById('game-settings-modal');
@@ -83,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. GLOBAL STATE & DATA ---
     const DEFAULT_COLORS = ['#ff005c', '#00f9ff', '#24ff00', '#ffc600', '#a000ff', '#ff5722', '#00a1ff', '#fdfdfd'];
-    const EMOJI_CHOICE_LIST = ['😀', '😇', '🥸', '😎', '🤩', '🥳', '🤔', '🤫', '🤯', '🥶', '😱', '😡', '🤡', '👻', '👽', '🤖', '😈', '👿', '🧑‍🏫', '🧑‍🎓', '👨‍🔬', '👩‍🚀', '🥷', '🧙', '🧛', '🧟', '🧞', '🤴', '👸', '🕵️‍♂️', '👩‍⚕️', '👨‍⚖️', '👩‍🎨', '👨‍🍳', '👩‍✈️', '🦊', '🦁', '🐯', '🐴', '🦄', '🦓', '🦌', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🦉', '🦅', '🦇', '🐺', '🐗', '🦋', '🐛', '🐜', '🐞', '🦗', '🕷️', '🦂', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🐪', '🦙', '🦒', '🐘', '🦏', '🦛', '🐐', '🐏', '🐖', '🐉', '🐲', '🌲', '🌳', '🌴', '🌵', '🌱', '🌿', '☘️', '🍀', '🍁', '🍂', '🍃', '🍄', '🌷', '🌸', '🌹', '🌺', '🌞', '🌕', '🌖', '🌗', '🌘', '🌑', '🌒', '🌓', '🌔', '🌝', '🌚', '⭐', '🌟', '🌠', '💫', '✨', '☄️', '🪐', '🌍', '🌎', '🌏', '🌋', '🏔️', '❄️', '⚡️', '🔥', '💥', '💨', '💧', '💦', '🌊', '🌈', '☀️', '🌤️', '⛅️', '🌥️', '☁️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️', '🌪️', '🍎', '🍊', '🍋', '🍉', '🍇', '🍓', '🥝', '🥥', '🍍', '🥭', '🍑', '🍒', '🍈', '🥨', '🥯', '🍞', '🥐', '🥖', '🧀', '🥚', '🍳', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙', '🧆', '🌮', '🌯', '🥗', '🥫', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🥮', '🍢', '🍡', '🍧', '🍨', '🍦', '🥧', '🧁', '🍰', '🎂', '🍿', '🍩', '🍪', '🥜', '🍫', '🍬', '🍭', '🍯', '🥛', '☕️', '🍵', '🧃', '🥤', '🧉', '⚽️', '🏀', '🏈', '⚾️', '🥎', '🎾', '🏐', '🎱', '🏓', '🏸', '🏒', '🏑', '🏏', '🪃', '🥅', '⛳️', '🏹', '🎣', '🤿', '🥊', '🥋', '🛹', '🛼', '🛷', '⛸️', '🥌', '🎯', '🎳', '🎮', '🕹️', '🎰', '🎲', '🧩', '♟️', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '⌚️', '📱', '💻', '⌨️', '🖱️', '🖨️', '🎥', '📷', '📹', '📺', '📻', '💡', '💣', '⚔️', '🛡️', '🔑', '🗝️', '💰', '🪙', '💎', '⚗️', '🔭', '🔬', '🧬', '⚙️', '⛓️', '📎', '📌', '📍', '📏', '📐', '✂️', '📝', '📚', '📜', '📖', '📑', '🔗', '✒️', '🖋️', '🖊️', '🖌️', '🖍️', '📁', '📂', '️', '📅', '📆', '🗑️', '🚗', '🚕', '🚙', '🚌', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛵', '🚲', '🛴', '🚀', '✈️', '🚁', '🚂', '🚤', '🚢', '🏰', '🏯', '🏟️', '🏠', '🏡', '🏢', '🏬', '🏭', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🕍', '🕌', '⛩️', '🕋', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '☮️', '☯️', '🕎', '✡️', '☪️', '✝️', '☦️', '☸️', '⚜️', '💠', '♾️', '✅', '❌', '💯', '‼️', '⁉️'];
+    const EMOJI_CHOICE_LIST = ['😀', '😇', '🥸', '😎', '🤩', '🥳', '🤔', '🤫', '🤯', '🥶', '😱', '😡', '🤡', '👻', '👽', '🤖', '😈', '👿', '🧑‍🏫', '🧑‍🎓', '👨‍🔬', '👩‍🚀', '🥷', '🧙', '🧛', '🧟', '🧞', '🤴', '👸', '🕵️‍♂️', '👩‍⚕️', '👨‍⚖️', '👩‍🎨', '👨‍🍳', '👩‍✈️', '🦊', '🦁', '🐯', '🐴', '🦄', '🦓', '🦌', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🦉', '🦅', '🦇', '🐺', '🐗', '🦋', '🐛', '🐜', '🐞', '🦗', '🕷️', '🦂', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🐪', '🦙', '🦒', '🐘', '🦏', '🦛', '🐐', '🐏', '🐖', '🐉', '🐲', '🌲', '🌳', '🌴', '🌵', '🌱', '🌿', '☘️', '🍀', '🍁', '🍂', '🍃', '🍄', '🌷', '🌸', '🌹', '🌺', '🌞', '🌕', '🌖', '🌗', '🌘', '🌑', '🌒', '🌓', '🌔', '🌝', '🌚', '⭐', '🌟', '🌠', '💫', '✨', '☄️', '🪐', '🌍', '🌎', '🌏', '🌋', '🏔️', '❄️', '⚡️', '🔥', '💥', '💨', '💧', '💦', '🌊', '🌈', '☀️', '🌤️', '⛅️', '🌥️', '☁️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️', '🌪️', '🍎', '🍊', '🍋', '🍉', '🍇', '🍓', '🥝', '🥥', '🍍', '🥭', '🍑', '🍒', '🍈', '🥨', '🥯', '🍞', '🥐', '🥖', '🧀', '🥚', '🍳', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙', '🧆', '🌮', '🌯', '🥗', '🥫', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🥮', '🍢', '🍡', '🍧', '🍨', '🍦', '🥧', '🧁', '🍰', '🎂', '🍿', '🍩', '🍪', '🥜', '🍫', '🍬', '🍭', '🍯', '🥛', '☕️', '🍵', '🧃', '🥤', '🧉', '⚽️', '🏀', '🏈', '⚾️', '🥎', '🎾', '🏐', '🎱', '🏓', '🏸', '🏒', '🏑', '🏏', 'G', '🥅', '⛳️', '🏹', '🎣', '𤿿', '🥊', '🥋', '🛹', '🛼', '🛷', '⛸️', '🥌', '🎯', '🎳', '🎮', '🕹️', '🎰', '🎲', '🧩', '♟️', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '⌚️', '📱', '💻', '⌨️', '🖱️', '🖨️', '🎥', '📷', '📹', '📺', '📻', '💡', '💣', '⚔️', '🛡️', '🔑', '🗝️', '💰', '🪙', '💎', '⚗️', '🔭', '🔬', '🧬', '⚙️', '⛓️', '📎', '📌', '📍', '📏', '📐', '✂️', '📝', '📚', '📜', '📖', '📑', '🔗', '✒️', '🖋️', '🖊️', '🖌️','📁', '📂', '️', '📅', '📆', '🗑️', '🚗', '🚕', '🚙', '🚌', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛵', '🚲', '🛴', '🚀', '✈️', '🚁', '🚂', '🚤', '🚢', '🏰', '🏯', '🏟️', '🏠', '🏡', '🏢', '🏬', '🏭', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🕍', '🕌', '⛩️', '🕋', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '☮️', '☯️', '🕎', '✡️', '☪️', '✝️', '☦️', '☸️', '⚜️', '💠', '♾️', '✅', '❌', '💯', '‼️', '⁉️'];
     const AVATAR_TIERS = [
         { name: 'Challenger', unlockScore: 0, emojis: [ '🦊', '🦁', '🐸', '🐙', '🦖', '🦋', '🐳', 'h', '🦦', '🦢', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦓', '🦒', '🐘', '', '🐪', '🦙', '🦘', '🐃', '🐂', '🐄', '🐖', '🐏', '🐐', '🐓', '🦃', '🕊️', '🦜', '🦢', '🦩', '🦚', '🐧', '🐨', '🐼', '🐻', '❄️', '🔥', '💧', '💨', '🥷', '🦹', '🧙', '🧛', '🧟', '🧞', '🤠', '🤡', '👻', '💀', '🤖', '👽', '🚀', '🎯', '💡', '💣', '⚔️', '🛡️', '🏹', '🎱', '🎲', '🍕', '🍔', '🎸', '🎨', '🗿', '⚓' ] },
         { name: 'Adept', unlockScore: 250, emojis: [ '🌟', '💎', '🧙‍♂️', '🐉', '🏆', '🧠', '🎩', '🔑', '💰', '📜', '📈', '🔬', '🔭', '🧭', '⚙️', '⛓️', '📎', '📌', '📍', '⚗️', '🧲', '💣', '⚖️' ] },
@@ -116,12 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: '-10 Points', type: 'points', value: -10 },
         { name: '-20 Points', type: 'points', value: -20 }
     ];
-    const ALL_GAME_CARDS = [...CORE_CARDS, ...JACKPOT_CARDS, ...STANDARD_CARDS, { name: 'Secret Dungeon Entrance!', type: 'dungeon' } ].reduce((acc, card) => {
+    // This list is now the definitive source for card names
+    // REMOVED: { name: 'Secret Dungeon Entrance!', type: 'dungeon' }
+    const ALL_GAME_CARDS = [...CORE_CARDS, ...JACKPOT_CARDS, ...STANDARD_CARDS ].reduce((acc, card) => {
         if (!acc.find(c => c.name === card.name)) {
             acc.push(card);
         }
         return acc;
-    }, []).sort((a, b) => { // Sort with Dungeon last
+    }, []).sort((a, b) => { // Sort with Dungeon last (dungeon is gone, but sort is harmless)
         if (a.type === 'dungeon') return 1;
         if (b.type === 'dungeon') return -1;
         return (b.value || 0) - (a.value || 0);
@@ -144,11 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let sfx = {};
-    let currentTheme = {
-        name: '', images: {}, palette: [], emojis: [], emojiMode: 'overlay',
-        backgroundImageFile: null, backgroundMusicFile: null, soundFiles: {}, soundData: {}
-    };
-    let activeGameTheme = {};
+    
+    // --- All Creator-related state removed ---
+    
+    let activeGameTheme = {}; // This will be set by the theme buttons
     let activeProfile = null;
     let colorThief = typeof ColorThief !== 'undefined' ? new ColorThief() : null;
     let db;
@@ -157,25 +151,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let questionTimer;
 
     // --- 3. HELPER & UTILITY FUNCTIONS ---
-    function fileToBase64(file) {
-        if (!file) return Promise.resolve(null);
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    }
+    // fileToBase64 is NO LONGER NEEDED by the new system.
 
     // --- 4. DATABASE & THEME MANAGEMENT ---
      function initDB() {
-        const request = indexedDB.open('GemaraKUpGameDB', 6);
+        // Reduced DB. We no longer need the 'themes' store.
+        const request = indexedDB.open('GemaraKUpGameDB', 7); // Incremented version
         request.onerror = (event) => console.error("Database error:", event.target.errorCode);
         request.onupgradeneeded = (event) => {
             console.log("Database upgrade needed.");
             const db = event.target.result;
             if (!db.objectStoreNames.contains('profiles')) db.createObjectStore('profiles', { keyPath: 'id', autoIncrement: true });
-            if (!db.objectStoreNames.contains('themes')) db.createObjectStore('themes', { keyPath: 'id', autoIncrement: true });
+            
+            // Delete the old, unused 'themes' store
+            if (db.objectStoreNames.contains('themes')) db.deleteObjectStore('themes');
+
             if (!db.objectStoreNames.contains('highscores')) {
                 const scoreStore = db.createObjectStore('highscores', { keyPath: 'id', autoIncrement: true });
                 scoreStore.createIndex('score', 'score', { unique: false });
@@ -189,226 +179,60 @@ document.addEventListener('DOMContentLoaded', () => {
         request.onsuccess = (event) => {
             db = event.target.result;
             console.log("Database initialized successfully.");
+            
+            // NOW we load the profiles AND the new themes
             showProfileScreen();
+            loadBuiltInThemes(); // Load themes into the setup page
         };
     }
 
-    function loadThemes() {
-        if (!db) { console.error("loadThemes: Database not initialized."); return; }
-        const transaction = db.transaction(['themes'], 'readonly');
-        const store = transaction.objectStore('themes');
-        const request = store.getAll();
+    // --- NEW FUNCTION ---
+    // This reads theme-data.js and builds the buttons on the setup page
+    function loadBuiltInThemes() {
+        if (!builtInThemesList) return;
+        
+        // `themes` is the global variable from theme-data.js
+        if (typeof themes === 'undefined' || Object.keys(themes).length === 0) {
+            builtInThemesList.innerHTML = "<p>Error: `theme-data.js` not loaded or is empty.</p>";
+            return;
+        }
 
-        request.onerror = (e) => console.error("Error loading themes:", e.target.error);
+        builtInThemesList.innerHTML = ''; // Clear list
 
-        request.onsuccess = () => {
-            savedThemesList.innerHTML = '';
-            const themes = request.result;
-            if (themes && themes.length > 0) {
-                noThemesMsg.classList.add('hidden');
-                themes.forEach(theme => {
-                    const buttonGroup = document.createElement('div');
-                    buttonGroup.className = 'theme-button-group';
+        for (const themeId in themes) {
+            const theme = themes[themeId];
+            const themeCard = document.createElement('div');
+            // Use a different class to avoid confusion
+            themeCard.className = 'theme-selection-card'; 
+            
+            const buttonId = `start-theme-${themeId}`;
 
-                    const loadBtn = document.createElement('button');
-                    loadBtn.textContent = theme.name || 'Unnamed Theme';
-                    loadBtn.className = 'load-theme-btn';
-                    loadBtn.onclick = () => {
-                        console.log('[DEBUG] Loading saved theme:', theme.name);
-                        activeGameTheme = theme;
-                        showModal(gameSettingsModal);
-                    };
+            themeCard.innerHTML = `
+                <h2 style="font-size: 1.8rem;">${theme.name}</h2>
+                <p>${theme.description || 'A custom game theme.'}</p>
+                <button id="${buttonId}" class="theme-start-btn">Start Game</button>
+            `;
+            
+            builtInThemesList.appendChild(themeCard);
 
-                    const editBtn = document.createElement('button');
-                    editBtn.textContent = 'Edit';
-                    editBtn.className = 'edit-theme-btn';
-                    editBtn.onclick = () => loadThemeIntoCreator(theme);
-
-                    buttonGroup.appendChild(loadBtn);
-                    buttonGroup.appendChild(editBtn);
-                    savedThemesList.appendChild(buttonGroup);
+            // Add the event listener for this new button
+            const themeButton = document.getElementById(buttonId);
+            if (themeButton) {
+                themeButton.addEventListener('click', () => {
+                    console.log(`[DEBUG] Selected theme: ${theme.name}`);
+                    
+                    // Set the active theme, just like your baseball game!
+                    activeGameTheme = theme; 
+                    
+                    // Show game settings
+                    showModal(gameSettingsModal);
                 });
-            } else {
-                noThemesMsg.classList.remove('hidden');
             }
-        };
-    }
-
-    function triggerThemeExport(themeData, themeName) {
-        try {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(themeData, null, 2));
-            const downloadAnchorNode = document.createElement('a');
-            const sanitizedFileName = (themeName || 'theme').replace(/[^a-z0-9\s-]/gi, '').trim().replace(/\s+/g, '_');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", `${sanitizedFileName}.json`);
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        } catch (error) {
-            console.error("Error triggering theme export:", error);
-            alert("Failed to export theme.");
         }
     }
 
-    function loadThemeIntoCreator(theme) {
-        console.log(`[DEBUG] Editing theme: "${theme.name}" (ID: ${theme.id})`);
-        currentTheme = {
-            id: theme.id,
-            name: theme.name,
-            images: {},
-            palette: theme.palette ? [...theme.palette] : [],
-            emojis: theme.emojis ? [...theme.emojis] : [],
-            emojiMode: theme.emojiMode || 'overlay',
-            backgroundImageData: theme.backgroundImageData,
-            backgroundMusicData: theme.backgroundMusicData,
-            imageCategoryData: theme.images ? { ...theme.images } : {},
-            soundFiles: {},
-            soundData: theme.sounds ? { ...theme.sounds } : {}
-        };
+    // --- ALL IMPORT/EXPORT/SAVE FUNCTIONS DELETED ---
 
-        navigateTo(CONSTANTS.PAGES.CREATOR);
-
-        const emojiDisplayOptions = document.getElementById('emoji-display-options');
-        if (currentTheme.emojis && currentTheme.emojis.length > 0) {
-            emojiDisplayOptions.classList.remove('hidden');
-            const emojiModeInput = document.querySelector(`input[name="emoji-mode"][value="${currentTheme.emojiMode}"]`);
-            if (emojiModeInput) emojiModeInput.checked = true;
-        } else {
-            emojiDisplayOptions.classList.add('hidden');
-        }
-    }
-
-    async function handleSaveCurrentTheme() {
-        if (!currentTheme.backgroundImageFile && !currentTheme.backgroundImageData) {
-            return alert("A background image is required to save a theme.");
-        }
-
-        const themeName = prompt("Enter a name for your theme:", currentTheme.name || "My Custom Theme");
-        if (!themeName) return;
-
-        try {
-            const emojiModeElement = document.querySelector('input[name="emoji-mode"]:checked');
-
-            const savableTheme = {
-                name: themeName,
-                palette: currentTheme.palette,
-                emojis: currentTheme.emojis,
-                emojiMode: emojiModeElement ? emojiModeElement.value : 'overlay',
-                backgroundImageData: currentTheme.backgroundImageFile
-                    ? await fileToBase64(currentTheme.backgroundImageFile)
-                    : currentTheme.backgroundImageData,
-                backgroundMusicData: currentTheme.backgroundMusicFile
-                    ? await fileToBase64(currentTheme.backgroundMusicFile)
-                    : currentTheme.backgroundMusicData,
-                images: { ...currentTheme.imageCategoryData },
-                sounds: { ...currentTheme.soundData }
-            };
-
-            for (const cardName in currentTheme.images) {
-                const files = currentTheme.images[cardName];
-                if (Array.isArray(files) && files.length > 0) {
-                    savableTheme.images[cardName] = await Promise.all(
-                        files.map(file => fileToBase64(file))
-                    );
-                }
-            }
-
-            for (const sfxName in currentTheme.soundFiles) {
-                const file = currentTheme.soundFiles[sfxName];
-                if (file) {
-                    savableTheme.sounds[sfxName] = await fileToBase64(file);
-                }
-            }
-
-            if (!db) { throw new Error("Database not initialized."); }
-            const transaction = db.transaction(['themes'], 'readwrite');
-            const store = transaction.objectStore('themes');
-
-            const request = currentTheme.id
-                ? store.put({ ...savableTheme, id: currentTheme.id })
-                : store.add(savableTheme);
-
-            request.onsuccess = (e) => {
-                alert(`Theme "${themeName}" ${currentTheme.id ? 'updated' : 'saved'}!`);
-                
-                // Get the ID of the new/updated theme
-                const savedThemeId = e.target.result || currentTheme.id;
-
-                // Auto-export if it's a new theme
-                if (!currentTheme.id && savedThemeId) {
-                     triggerThemeExport(savableTheme, themeName);
-                }
-
-                // --- THIS IS THE FIX ---
-                // Instead of resetting currentTheme, we update it with the
-                // data we just saved, so editing can continue.
-                currentTheme = {
-                    id: savedThemeId,
-                    name: savableTheme.name,
-                    palette: savableTheme.palette,
-                    emojis: savableTheme.emojis,
-                    emojiMode: savableTheme.emojiMode,
-                    backgroundImageData: savableTheme.backgroundImageData,
-                    backgroundMusicData: savableTheme.backgroundMusicData,
-                    imageCategoryData: savableTheme.images, // Use the saved Base64 images
-                    soundData: savableTheme.sounds,         // Use the saved Base64 sounds
-                    images: {}, // Clear the temporary file upload state
-                    soundFiles: {}  // Clear the temporary file upload state
-                };
-                
-                // Refresh the creator inputs to show all saved thumbnails
-                renderThemeCreatorInputs();
-                
-                // Refresh the main menu's list of saved themes
-                loadThemes();
-            };
-            request.onerror = (e) => {
-                 console.error("Error saving/updating theme:", e.target.error);
-                 alert("Failed to save theme. See console for details.");
-            };
-
-        } catch (error) {
-            console.error("Error preparing theme for saving:", error);
-            alert("An error occurred while preparing the theme. See console for details.");
-        }
-    }
-
-
-    function handleImportTheme(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const themeData = JSON.parse(e.target.result);
-                if (!themeData || typeof themeData !== 'object' || !themeData.name || !themeData.backgroundImageData) {
-                     throw new Error("Invalid theme file format.");
-                }
-
-                if (!db) { throw new Error("Database not initialized."); }
-                const transaction = db.transaction(['themes'], 'readwrite');
-                const store = transaction.objectStore('themes');
-                const request = store.add(themeData);
-
-                request.onsuccess = () => {
-                    alert(`Theme "${themeData.name}" imported and saved!`);
-                    loadThemes();
-                };
-                request.onerror = (e) => {
-                     console.error("Error saving imported theme:", e.target.error);
-                     alert("Failed to save imported theme. It might already exist or there was a database error.");
-                };
-            } catch (error) {
-                console.error("Error parsing or validating theme file:", error);
-                alert(`Could not import theme. ${error.message}`);
-            }
-        };
-        reader.onerror = () => {
-             alert("Error reading the theme file.");
-        };
-        reader.readAsText(file);
-        event.target.value = null;
-    }
 
     function loadHighScores(scope = 'profile') {
         if (!db) { console.error("loadHighScores: Database not initialized."); return; }
@@ -510,6 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Howler.unload();
         sfx = {};
 
+        // Use theme.sounds (which contains paths) or fall back to defaults
         const themeSounds = theme.sounds || {};
         const defaultSounds = {
             lowGain: 'https://cdn.pixabay.com/audio/2022/03/15/audio_a46b732152.mp3',
@@ -523,14 +348,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const soundNames = ['lowGain', 'highGain', 'lowLoss', 'highLoss', 'special', 'gameOver'];
 
         soundNames.forEach(name => {
+            // Get the path from the theme, or the default path
             const src = themeSounds[name] || defaultSounds[name];
             if (src) {
                 sfx[name] = new Howl({
-                     src: [src],
+                     src: [src], // Howler works perfectly with paths
                      html5: true
                  });
-                 sfx[name].once('load', () => console.log(`Sound "${name}" loaded.`));
-                 sfx[name].on('loaderror', (id, err) => console.error(`Error loading sound "${name}":`, err));
+                 sfx[name].once('load', () => console.log(`Sound "${name}" loaded from ${src}`));
+                 sfx[name].on('loaderror', (id, err) => console.error(`Error loading sound "${name}" from ${src}:`, err));
             } else {
                  console.warn(`No source found for sound "${name}".`);
             }
@@ -557,19 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
              if (workingDeck.length < numberOfSquares) workingDeck.push(card);
         });
 
-        const numberOfDungeonCards = 5;
-        let addedDungeonCards = 0;
-        for (let i = 0; i < workingDeck.length && addedDungeonCards < numberOfDungeonCards; i++) {
-             const isStandard = STANDARD_CARDS.find(sc => sc.name === workingDeck[i]?.name);
-             if (isStandard) {
-                workingDeck[i] = { name: 'Secret Dungeon Entrance!', type: 'dungeon' };
-                addedDungeonCards++;
-            }
-        }
-        while(addedDungeonCards < numberOfDungeonCards && workingDeck.length < numberOfSquares) {
-             workingDeck.push({ name: 'Secret Dungeon Entrance!', type: 'dungeon' });
-             addedDungeonCards++;
-        }
+        // --- ENTIRE DUNGEON CARD LOGIC BLOCK REMOVED ---
 
         const remainingSlots = numberOfSquares - workingDeck.length;
         if (remainingSlots > 0) {
@@ -587,13 +401,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const finalDeck = workingDeck.slice(0, numberOfSquares);
 
-        const dungeonCount = finalDeck.filter(card => card && card.type === 'dungeon').length;
-        console.log(`[DEBUG] Created deck of size ${finalDeck.length}. Contains ${dungeonCount} dungeon cards.`);
+        // const dungeonCount = finalDeck.filter(card => card && card.type === 'dungeon').length; // REMOVED
+        console.log(`[DEBUG] Created deck of size ${finalDeck.length}.`); // MODIFIED
 
         return finalDeck;
     }
 
 
+    // --- MODIFIED: startGame ---
+    // Now uses the pre-loaded activeGameTheme
     function startGame(numberOfSquares) {
         numberOfSquares = parseInt(numberOfSquares, 10) || 60;
         numberOfSquares = Math.max(10, Math.min(numberOfSquares, 100));
@@ -612,25 +428,37 @@ document.addEventListener('DOMContentLoaded', () => {
         gameState.pendingEventForAnnul = null;
 
         shuffledDeck = createShuffledDeck(numberOfSquares);
-        window.shuffledDeck = shuffledDeck; // <-- ADD THIS LINE
+        window.shuffledDeck = shuffledDeck;
 
+        // --- NEW LOGIC for file paths ---
         if (activeGameTheme.backgroundImageData) {
-            document.body.style.backgroundImage = `url(${activeGameTheme.backgroundImageData})`;
+            // Check if it's a path or Base64
+            const url = activeGameTheme.backgroundImageData.startsWith('data:') 
+                ? activeGameTheme.backgroundImageData 
+                : `${activeGameTheme.backgroundImageData}`; // Assumes relative path
+            
+            document.body.style.backgroundImage = `url(${url})`;
             document.body.style.backgroundSize = 'cover';
             document.body.style.backgroundPosition = 'center';
             document.body.style.backgroundRepeat = 'no-repeat';
         } else {
              document.body.style.backgroundImage = '';
         }
+        
         if (activeGameTheme.backgroundMusicData && backgroundMusic) {
-             if(backgroundMusic.src !== activeGameTheme.backgroundMusicData || backgroundMusic.paused){
-                 backgroundMusic.src = activeGameTheme.backgroundMusicData;
+            const musicUrl = activeGameTheme.backgroundMusicData.startsWith('data:')
+                ? activeGameTheme.backgroundMusicData
+                : `${activeGameTheme.backgroundMusicData}`;
+
+             if(backgroundMusic.src !== musicUrl || backgroundMusic.paused){
+                 backgroundMusic.src = musicUrl;
                  backgroundMusic.play().catch(e => console.warn("Background music autoplay prevented.", e));
              }
         } else if (backgroundMusic) {
              backgroundMusic.pause();
              backgroundMusic.src = '';
         }
+        // --- END NEW LOGIC ---
 
         loadSoundEffects(activeGameTheme);
         createBoard(numberOfSquares);
@@ -650,9 +478,55 @@ document.addEventListener('DOMContentLoaded', () => {
         board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
         board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-        const colors = activeGameTheme.palette && activeGameTheme.palette.length > 0 ? activeGameTheme.palette : DEFAULT_COLORS;
+        // --- UPDATED: Color Palette Logic ---
+        // If palette is empty in theme, try to generate one from the BG image
+        let colors = activeGameTheme.palette;
+        if (!colors || colors.length === 0) {
+            if (activeGameTheme.backgroundImageData && colorThief) {
+                const img = new Image();
+                img.crossOrigin = "Anonymous"; // In case the path is to a different domain
+                img.onload = () => {
+                    try {
+                        const palette = colorThief.getPalette(img, 8);
+                        colors = palette.map(rgb => `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`);
+                        console.log("Generated palette from background:", colors);
+                        applyColors(colors); // Re-apply colors after image load
+                    } catch (e) {
+                        console.error("ColorThief error, using default colors:", e);
+                        colors = DEFAULT_COLORS;
+                        applyColors(colors);
+                    }
+                };
+                img.onerror = () => {
+                     console.error("Could not load BG image for palette, using default colors.");
+                     colors = DEFAULT_COLORS;
+                     applyColors(colors);
+                };
+                img.src = activeGameTheme.backgroundImageData;
+            } else {
+                colors = DEFAULT_COLORS; // Fallback
+            }
+        }
+        
+        if (!colors || colors.length === 0) {
+             colors = DEFAULT_COLORS;
+        }
+        // --- END UPDATED ---
+
         const useEmojis = activeGameTheme.emojis && activeGameTheme.emojis.length > 0;
         const emojiMode = activeGameTheme.emojiMode || 'overlay';
+
+        const applyColors = (colorPalette) => {
+            const squares = board.querySelectorAll('.square');
+            squares.forEach((square, i) => {
+                if (useEmojis && emojiMode === 'replace') {
+                    square.style.backgroundColor = 'var(--light-bg)';
+                    square.style.color = colorPalette[i % colorPalette.length];
+                } else {
+                    square.style.backgroundColor = colorPalette[i % colorPalette.length];
+                }
+            });
+        };
 
         for (let i = 0; i < actualSquares; i++) {
             const square = document.createElement('div');
@@ -666,6 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      square.style.lineHeight = '1';
                 }
 
+                // Apply initial colors (might be replaced by async palette)
                 if (useEmojis && emojiMode === 'replace') {
                     square.style.backgroundColor = 'var(--light-bg)';
                      square.style.color = colors[i % colors.length];
@@ -679,6 +554,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             board.appendChild(square);
         }
+        
+        // Apply colors if they were available immediately
+        if (colors.length > 0) {
+            applyColors(colors);
+        }
     }
 
 
@@ -690,7 +570,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!clickedSquare || clickedSquare.classList.contains('flipped')) { return; }
 
         if (gameState.keepFriendsCloseTargetTeamId) {
-            handleKeepFriendsCloseSelection(clickedSquare);
+            // handleKeepFriendsCloseSelection(clickedSquare); // This entire system is part of dungeon.js
+            console.warn("KFC active but no handler!"); // Safety log
             return;
         }
 
@@ -756,11 +637,16 @@ document.addEventListener('DOMContentLoaded', () => {
             gameState.doubleNextOutcome = false;
         }
 
-        const imagePool = activeGameTheme.images?.[eventCard.name] || activeGameTheme.images?.['Secret Dungeon Entrance!'];
+        // --- UPDATED: Image Loading ---
+        // Images are now file paths
+        // REMOVED: || activeGameTheme.images?.['Secret Dungeon Entrance!']
+        const imagePool = activeGameTheme.images?.[eventCard.name]; 
         if (imagePool && imagePool.length > 0) {
             const randomIndex = Math.floor(Math.random() * imagePool.length);
-            selectedImageUrl = imagePool[randomIndex];
+            selectedImageUrl = imagePool[randomIndex]; // This is now a path
         }
+        // --- END UPDATED ---
+
 
         if (eventCard.type === 'points') {
             let valueToApply = eventCard.value;
@@ -794,29 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  message += `<p>"${eventCard.name}" has no effect on chosen target!</p>`;
                  sfxToPlay = 'lowLoss';
              }
-        } else if (eventCard.type === 'dungeon') {
-             if (isOwnTurn) {
-                 console.log("[DEBUG] Dungeon card type recognized!");
-                 if(sfx.special) sfx.special.play();
-                 if(selectedImageUrl){
-                     showFullscreenModal(selectedImageUrl, `<h2>${team.avatar} ${team.name}</h2><p>Found a Secret Dungeon Entrance!</p>`);
-                     fullscreenEvent.onclick = () => {
-                         hideModal(fullscreenEvent);
-                         setTimeout(() => enterDungeon(team, eventCard), 300);
-                         fullscreenEvent.onclick = () => {
-                             hideModal(fullscreenEvent);
-                             setTimeout(endTurn, 300);
-                         };
-                     };
-                 } else {
-                     showEventModal(`<h2>${team.avatar} ${team.name}</h2><p>Found a Secret Dungeon Entrance!</p>`);
-                     setTimeout(() => enterDungeon(team, eventCard), 2000);
-                 }
-                 return;
-             } else {
-                  message += `<p>Dungeon entrance fades away for the chosen target!</p>`;
-                  sfxToPlay = 'lowLoss';
-             }
+        // --- ENTIRE 'dungeon' BLOCK REMOVED ---
         } else {
              console.warn(`[DEBUG] Encountered unknown card type: "${eventCard.type}" for card "${eventCard.name}"`);
              message += `<p>An unusual event occurred!</p>`;
@@ -1058,10 +922,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateScoreboard(); 
 
         if (gameState.keepFriendsCloseTargetTeamId) {
-             const targetTeam = gameState.teams.find(t=> t.dbId === gameState.keepFriendsCloseTargetTeamId);
-             const actingTeam = gameState.teams[gameState.currentTurn];
-             console.log("[DEBUG] Keep Friends Close is active. Player selects for opponent.");
-             showEventModal(`<h2>Keep Your Friends Close!</h2><p>${actingTeam?.avatar} ${actingTeam?.name}, choose a square for ${targetTeam?.avatar} ${targetTeam?.name}!</p>`);
+             // const targetTeam = gameState.teams.find(t=> t.dbId === gameState.keepFriendsCloseTargetTeamId); // Logic removed
+             // const actingTeam = gameState.teams[gameState.currentTurn]; // Logic removed
+             console.log("[DEBUG] Keep Friends Close is active... but dungeon is removed. Resetting.");
+             showEventModal(`<h2>KFC Error!</h2><p>Resetting turn.</p>`); // Safety
+             gameState.keepFriendsCloseTargetTeamId = null;
              gameState.isTurnActive = true;
              return;
         }
@@ -1223,186 +1088,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    function renderThemeCreatorInputs() {
-        const container = document.getElementById('specific-image-uploads-container');
-        if (!container) { console.error("Image upload container not found."); return; }
-        container.innerHTML = '';
-
-        ALL_GAME_CARDS.forEach(card => {
-            const cardName = card.name;
-             const safeCardNameId = cardName.replace(/[^a-zA-Z0-9]/g, '');
-
-            const categoryEl = document.createElement('div');
-            categoryEl.className = 'specific-upload-category';
-            const existingImages = currentTheme.imageCategoryData?.[cardName] || [];
-
-            categoryEl.innerHTML = `
-                <p><strong>${cardName}</strong></p>
-                <label for="file-input-${safeCardNameId}" class="file-label">Add Images (Max 5)</label>
-                <small style="display: block; margin-top: 5px; color: var(--text-color); font-size: 0.9rem;">Select 1-5 images. One chosen randomly.</small>
-                <input type="file" id="file-input-${safeCardNameId}" data-card-name="${cardName}" multiple accept="image/*" class="hidden">
-                <div class="image-preview-area" id="preview-${safeCardNameId}">
-                    ${existingImages.map(imgData => imgData ? `<img src="${imgData}" class="img-thumbnail" alt="Preview">` : '').join('')}
-                </div>
-                <hr style="margin-top: 1rem; border-color: var(--light-bg);">
-            `;
-            container.appendChild(categoryEl);
-
-            const label = categoryEl.querySelector(`label[for="file-input-${safeCardNameId}"]`);
-            const input = categoryEl.querySelector(`#file-input-${safeCardNameId}`);
-            if (label && input) {
-                 label.onclick = () => input.click();
-
-                input.addEventListener('change', (e) => {
-                    const files = Array.from(e.target.files);
-                    const targetCardName = e.target.dataset.cardName;
-                    if (!targetCardName || files.length === 0) return;
-
-                    // --- FIX: Check against TOTAL images ---
-                    const existingImages = currentTheme.imageCategoryData?.[targetCardName] || [];
-                    if (files.length + existingImages.length > 5) {
-                        alert("You can only have a maximum of 5 images per event.");
-                        e.target.value = null; 
-                        return;
-                    }
-
-                    // Save the new File objects
-                    currentTheme.images[targetCardName] = files;
-
-                    const previewContainer = document.getElementById(`preview-${safeCardNameId}`);
-                    if (previewContainer) {
-                        // --- FIX: Rerender ALL thumbnails for this category ---
-                        previewContainer.innerHTML = ''; // Wipe container first
-                        
-                        // 1. Render existing Base64 images
-                        existingImages.forEach(imgData => {
-                            if (imgData) {
-                                const img = document.createElement('img');
-                                img.src = imgData;
-                                img.className = 'img-thumbnail';
-                                img.alt = "Saved preview";
-                                previewContainer.appendChild(img);
-                            }
-                        });
-
-                        // 2. Render new File objects
-                        files.forEach(file => {
-                             if (!file.type.startsWith('image/')) return;
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                                const img = document.createElement('img');
-                                img.src = event.target.result;
-                                img.className = 'img-thumbnail';
-                                img.alt = "New preview";
-                                previewContainer.appendChild(img);
-                            };
-                            reader.onerror = () => console.error("Error reading image file for preview.");
-                            reader.readAsDataURL(file);
-                        });
-                    }
-                });
-            }
-        });
+    // --- renderThemeCreatorInputs() DELETED ---
 
 
-        document.querySelectorAll('input.sfx-input').forEach(input => {
-            const label = input.previousElementSibling;
-            const sfxName = input.dataset.sfxName;
-
-            if (label) label.onclick = () => input.click();
-
-            if (label) {
-                 label.textContent = 'Choose Sound';
-                 label.style.borderColor = 'var(--accent-color)';
-                 label.style.color = 'var(--text-color)';
-            }
-
-            if (currentTheme.soundData && currentTheme.soundData[sfxName]) {
-                 if (label) {
-                      label.textContent = `✅ Using saved sound`;
-                      label.style.borderColor = 'var(--rank1-color)';
-                      label.style.color = 'var(--rank1-color)';
-                 }
-            }
-
-            input.addEventListener('change', (e) => {
-                const targetSfxName = e.target.dataset.sfxName;
-                const file = e.target.files[0];
-                if (!targetSfxName || !file) return;
-
-                currentTheme.soundFiles[targetSfxName] = file;
-
-                const changedLabel = e.target.previousElementSibling;
-                if (changedLabel) {
-                    changedLabel.textContent = `✅ ${file.name}`;
-                    changedLabel.style.borderColor = 'var(--rank1-color)';
-                    changedLabel.style.color = 'var(--rank1-color)';
-                }
-            });
-        });
-
-         const bgInput = document.getElementById('image-input');
-         const musicInputEl = document.getElementById('music-input');
-         const bgLabel = document.querySelector('label[for="image-input"]');
-         const musicLabel = document.querySelector('label[for="music-input"]');
-
-         if(bgLabel && bgInput) bgLabel.onclick = () => bgInput.click();
-         if(musicLabel && musicInputEl) musicLabel.onclick = () => musicInputEl.click();
-
-         if(bgInput) bgInput.addEventListener('change', (e) => {
-             const file = e.target.files[0];
-             if(!file) { if(bgLabel) bgLabel.textContent = 'Choose Background'; return; }
-             if(bgLabel) bgLabel.textContent = `✅ ${file.name}`;
-             currentTheme.backgroundImageFile = file;
-             const tempUrl = URL.createObjectURL(file);
-             const img = new Image();
-             img.onload = () => {
-                if (!colorThief) {
-                     console.warn("ColorThief not loaded. Using default colors.");
-                     currentTheme.palette = [...DEFAULT_COLORS];
-                     URL.revokeObjectURL(tempUrl);
-                     return;
-                 }
-                 try {
-                     const palette = colorThief.getPalette(img, 8); // Get 8 colors
-                     currentTheme.palette = palette.map(rgb => `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`);
-                     console.log("Palette generated:", currentTheme.palette);
-                     alert("Background image loaded and color palette generated!");
-                 } catch (err) {
-                     console.error("Error generating palette:", err);
-                     currentTheme.palette = [...DEFAULT_COLORS];
-                     alert("Error generating palette. Using default colors.");
-                 }
-                 URL.revokeObjectURL(tempUrl);
-             };
-             img.onerror = () => {
-                 console.error("Error loading image for palette generation.");
-                 alert("Error loading image. Using default colors.");
-                 currentTheme.palette = [...DEFAULT_COLORS];
-                 URL.revokeObjectURL(tempUrl);
-             };
-             img.src = tempUrl;
-        });
-
-         if(musicInputEl) musicInputEl.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-             if(!file) { if(musicLabel) musicLabel.textContent = 'Choose Music'; return; }
-             if(musicLabel) musicLabel.textContent = `✅ ${file.name}`;
-            currentTheme.backgroundMusicFile = file;
-        });
-
-         if(currentTheme.backgroundImageData && bgLabel) bgLabel.textContent = '✅ Using saved background';
-         if(currentTheme.backgroundMusicData && musicLabel) musicLabel.textContent = '✅ Using saved music';
-    }
-
-
+    // --- REPLACED: navigateTo() ---
     function navigateTo(page) {
         const pages = {
             [CONSTANTS.PAGES.SETUP]: setupContainer,
-            [CONSTANTS.PAGES.CREATOR]: themeCreatorContainer,
+            // [CONSTANTS.PAGES.CREATOR]: themeCreatorContainer, // Removed
             [CONSTANTS.PAGES.GAME]: gameContainer,
             [CONSTANTS.PAGES.PROFILE]: profileContainer,
-            [CONSTANTS.PAGES.DUNGEON]: dungeonContainer
+            // [CONSTANTS.PAGES.DUNGEON]: dungeonContainer // Removed
         };
 
         console.log(`[DEBUG] Navigating to page: "${page}"`);
@@ -1417,26 +1113,28 @@ document.addEventListener('DOMContentLoaded', () => {
              page = CONSTANTS.PAGES.SETUP;
         }
 
-        const isCreator = page === CONSTANTS.PAGES.CREATOR;
+        // const isCreator = page === CONSTANTS.PAGES.CREATOR; // Removed
         const isSetup = page === CONSTANTS.PAGES.SETUP;
-        const isGameOrDungeon = page === CONSTANTS.PAGES.GAME || page === CONSTANTS.PAGES.DUNGEON;
+        // MODIFIED: isGameOrDungeon
+        const isGameOrDungeon = page === CONSTANTS.PAGES.GAME;
         const isProfile = page === CONSTANTS.PAGES.PROFILE;
 
-        creatorNavBtn.classList.toggle('hidden', !isSetup);
+        // creatorNavBtn.classList.toggle('hidden', !isSetup); // Removed
         mainMenuNavBtn.classList.toggle('hidden', isSetup || isProfile);
         changeProfileBtn.classList.toggle('hidden', !isSetup);
 
         if (isGameOrDungeon) { mainMenuNavBtn.textContent = "End Game"; }
-        else if (isCreator) { mainMenuNavBtn.textContent = "Main Menu"; }
+        // else if (isCreator) { mainMenuNavBtn.textContent = "Main Menu"; } // Removed
         else { mainMenuNavBtn.textContent = "Main Menu"; }
 
 
         if (isSetup) {
-            loadThemes(); loadHighScores('profile');
+            // loadBuiltInThemes(); // This is now called once in initDB()
+            loadHighScores('profile');
             if (activeProfile?.name) classHsBtn.textContent = `${activeProfile.name}'s Ranking`;
             else classHsBtn.textContent = 'Class Ranking';
         }
-        if (isCreator) { renderThemeCreatorInputs(); }
+        // if (isCreator) { ... } // Removed
         if (isProfile) { classHsBtn.textContent = 'Class Ranking'; }
     }
 
@@ -1466,6 +1164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 7. TEAM SETUP LOGIC ---
+    // (This whole section is unchanged and correct)
     function initiateGameSetup(totalTeams) {
         console.log('[DEBUG] initiateGameSetup() called.');
         teamSetupState = { currentIndex: 0, totalTeams: totalTeams, teams: [] };
@@ -1812,39 +1511,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 8. EVENT LISTENERS ---
-     function openEmojiSelector() {
-        const emojiModal = document.getElementById('emoji-select-modal');
-        const emojiGrid = emojiModal.querySelector('#emoji-grid');
-        if (!emojiGrid) return;
-        emojiGrid.innerHTML = '';
-
-        EMOJI_CHOICE_LIST.forEach(emoji => {
-            const emojiBtn = document.createElement('button');
-            emojiBtn.textContent = emoji;
-            emojiBtn.className = 'emoji-choice';
-            if (currentTheme.emojis && currentTheme.emojis.includes(emoji)) {
-                emojiBtn.classList.add('selected');
-            }
-            emojiBtn.onclick = () => {
-                const selectedCount = emojiGrid.querySelectorAll('.selected').length;
-                if (!emojiBtn.classList.contains('selected') && selectedCount >= 8) {
-                    alert("You can select a maximum of 8 emojis.");
-                    return;
-                }
-                emojiBtn.classList.toggle('selected');
-            };
-            emojiGrid.appendChild(emojiBtn);
-        });
-        showModal(emojiModal);
-    }
+    
+    // --- All creator-related listeners are GONE ---
 
     // Header Buttons
     changeProfileBtn.addEventListener('click', showProfileScreen);
-    creatorNavBtn.addEventListener('click', () => navigateTo(CONSTANTS.PAGES.CREATOR));
+    // creatorNavBtn listener removed
     mainMenuNavBtn.addEventListener('click', () => {
-        if (dungeonContainer && !dungeonContainer.classList.contains('hidden')) {
-             if (confirm("End game and return to menu?")) exitDungeon();
-        } else if (gameContainer && !gameContainer.classList.contains('hidden')) {
+        // MODIFIED: Removed dungeon check
+        if (gameContainer && !gameContainer.classList.contains('hidden')) {
              if (confirm("End current game and return to menu?")) resetToMenu();
         } else {
              navigateTo(CONSTANTS.PAGES.SETUP);
@@ -1855,88 +1530,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-profile-btn').addEventListener('click', handleAddProfile);
 
     // Setup Screen Buttons
-    defaultStartBtn.addEventListener('click', () => {
-        activeGameTheme = { palette: DEFAULT_COLORS, images: {}, emojis: [], emojiMode: 'overlay', sounds: {} };
-        showModal(gameSettingsModal);
-    });
-    importThemeBtn.addEventListener('click', () => themeImporter.click());
-    themeImporter.addEventListener('change', handleImportTheme);
+    // defaultStartBtn is now created dynamically by loadBuiltInThemes()
+    // importThemeBtn listeners removed
     classHsBtn.addEventListener('click', () => loadHighScores('profile'));
     globalHsBtn.addEventListener('click', () => loadHighScores('global'));
 
-    // Theme Creator Buttons
-    startWithCustomBtn.addEventListener('click', async () => { // Make it async
-        console.log("Starting with custom theme (processing files)...");
+    // --- All custom theme buttons removed ---
 
-        // 1. Check for background
-        if (!currentTheme.backgroundImageFile && !currentTheme.backgroundImageData) {
-            alert("A background image is required to play.");
-            return;
-        }
-
-        // 2. Show a temporary "loading" message
-        const originalBtnText = startWithCustomBtn.textContent;
-        startWithCustomBtn.textContent = "Processing Images...";
-        startWithCustomBtn.disabled = true;
-
-        try {
-            // 3. Prepare all data, converting files to Base64
-            const bgData = currentTheme.backgroundImageFile
-                ? await fileToBase64(currentTheme.backgroundImageFile)
-                : currentTheme.backgroundImageData;
-
-            const musicData = currentTheme.backgroundMusicFile
-                ? await fileToBase64(currentTheme.backgroundMusicFile)
-                : currentTheme.backgroundMusicData;
-
-            // 4. Process Event Images
-            // Start with images from the loaded theme (if editing)
-            const processedImages = { ...currentTheme.imageCategoryData };
-            // Overwrite with any new files you've just uploaded
-            for (const cardName in currentTheme.images) {
-                const files = currentTheme.images[cardName];
-                if (Array.isArray(files) && files.length > 0) {
-                    processedImages[cardName] = await Promise.all(
-                        files.map(file => fileToBase64(file))
-                    );
-                }
-            }
-
-            // 5. Process Sounds
-            // Start with sounds from loaded theme
-            const processedSounds = { ...currentTheme.soundData };
-            // Overwrite with new files
-            for (const sfxName in currentTheme.soundFiles) {
-                const file = currentTheme.soundFiles[sfxName];
-                if (file) {
-                    processedSounds[sfxName] = await fileToBase64(file);
-                }
-            }
-
-            // 6. Build the activeGameTheme for this session
-            activeGameTheme = {
-                name: "Custom Theme (Unsaved)",
-                palette: currentTheme.palette.length > 0 ? currentTheme.palette : DEFAULT_COLORS,
-                emojis: currentTheme.emojis,
-                emojiMode: document.querySelector('input[name="emoji-mode"]:checked')?.value || 'overlay',
-                backgroundImageData: bgData,
-                backgroundMusicData: musicData,
-                images: processedImages,
-                sounds: processedSounds
-            };
-
-            // 7. Reset button and show settings
-            startWithCustomBtn.textContent = originalBtnText;
-            startWithCustomBtn.disabled = false;
-            showModal(gameSettingsModal);
-
-        } catch (error) {
-            console.error("Error processing theme files for play:", error);
-            alert("An error occurred while preparing the theme. See console for details.");
-            startWithCustomBtn.textContent = originalBtnText;
-            startWithCustomBtn.disabled = false;
-        }
-    });
     // Game Screen Buttons
     gameMenuBtn.addEventListener('click', () => {
          if (confirm("Are you sure you want to end the current game and return to the menu?")) {
@@ -1965,10 +1565,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     // --- 9. INITIALIZE THE APP ---
-    initDB();
+    initDB(); // This now also triggers loadBuiltInThemes() on success
 
 
     // --- 10. EXPOSE FUNCTIONS/VARS TO GLOBAL SCOPE (for dungeon.js) ---
+    // These are still here in case dungeon.js is added back, but the functions
+    // it relies on are no longer defined (e.g., enterDungeon).
+    // The handleKeepFriendsCloseSelection function itself is removed.
     window.CONSTANTS = CONSTANTS;
     window.gameState = gameState;
     window.sfx = sfx;
@@ -1994,13 +1597,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.processEvent = processEvent;
     window.endGame = endGame;
     
-    window.handleKeepFriendsCloseSelection = (clickedSquareElement) => {
-        if (typeof window.handleKeepFriendsCloseSelection_fromDungeon === 'function') {
-            window.handleKeepFriendsCloseSelection_fromDungeon(clickedSquareElement);
-        } else {
-            console.error("Dungeon function handleKeepFriendsCloseSelection_fromDungeon not found on window!");
-        }
-    };
+    // REMOVED: window.handleKeepFriendsCloseSelection
     
     window.shuffledDeck = shuffledDeck;
 

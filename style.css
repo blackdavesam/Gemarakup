@@ -600,48 +600,32 @@ button:disabled {
 }
 
 /* --- NEW DUNGEON STYLES --- */
-#dungeon-container {
-    background: linear-gradient(145deg, #1c0b2e, #0f061a);
-    border: 5px solid #4a0e6c; /* Deep purple border */
-    box-shadow: inset 0 0 30px rgba(74, 14, 108, 0.8);
-    display: flex; /* Override .container default */
-    justify-content: center;
-    align-items: center;
-}
-#dungeon-content {
-    background: rgba(13, 13, 26, 0.7); /* Semi-transparent dark bg */
-    padding: 2rem;
-    border-radius: 15px;
-    border: 2px solid #a000ff;
-    box-shadow: 0 0 25px rgba(160, 0, 255, 0.6);
+/* --- ENTIRE DUNGEON STYLE BLOCK REMOVED --- */
+
+/* Add this to style.css */
+.img-thumbnail-wrapper {
+    position: relative;
+    display: inline-block;
 }
 
-#dungeon-content h2 {
-    color: #a000ff; /* Purple accent */
-    font-family: 'Orbitron', sans-serif;
-    text-shadow: 0 0 10px #a000ff;
-    font-size: 2.5rem; /* Larger heading */
-    margin-bottom: 1rem;
+.img-remove-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--rank-last-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+    padding: 0;
+    cursor: pointer;
+    z-index: 1;
 }
-#dungeon-content p {
-    font-size: 1.2rem;
-    color: var(--text-color);
-    margin-bottom: 2rem;
-}
-
-.dungeon-choice-btn {
-    background-color: #3d1b58;
-    border-color: #a000ff;
-    padding: 15px 30px;
-    font-size: 1.3rem;
-    font-family: 'Russo One', sans-serif;
-    box-shadow: 0 0 15px rgba(160, 0, 255, 0.5);
-    color: var(--text-color);
-}
-
-.dungeon-choice-btn:hover {
-    background-color: #a000ff;
-    color: #fff;
-    box-shadow: 0 0 25px #a000ff;
-    transform: scale(1.05);
+.img-remove-btn:hover {
+    background: #ff4785;
 }
