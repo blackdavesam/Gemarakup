@@ -149,5 +149,109 @@ const themes = {
 
     // Add your next theme here:
     // "my_second_theme": { ... }
+   ,
+   
+   "pizza": {
+        name: "Gemarakup Pizza Edition",
+        description: "A delicious theme full of cheesy goodness.",
+
+        // TODO: Add your main background/music files here
+        backgroundImageData: null, // "themes/Pizza/Your_Pizza_Background.jpeg",
+        backgroundMusicData: null, // "themes/Pizza/Your_Pizza_Music.mp3",
+
+        palette: [], // Leave empty to auto-generate from background
+
+        emojis: ['🍕', '🤌', '🇮🇹', '👨‍🍳', '🧀', '🍅', '🌶️', '🍄'],
+        emojiMode: 'overlay',
+
+        images: {
+            // --- Jackpot ---
+            "+75 Points (JACKPOT!)": [ 
+                // <-- TODO: Add paths from your "+75" folder
+                // "themes/Pizza/+75/your_image.jpeg", ... 
+            ],
+            "+50 Points (Big Bonus!)": [
+                // <-- TODO: Add paths from your "+50" folder
+            ],
+            "-50 Points (Disaster!)": [
+                 "themes/Pizza/-50/pizza_minus_fifty00001.jpeg",
+                 "themes/Pizza/-50/pizza_minus_fifty00002.jpeg",
+                 "themes/Pizza/-50/pizza_minus_fifty00003.jpeg",
+                 "themes/Pizza/-50/pizza_minus_fifty00004.jpeg"
+            ],
+            
+            // --- Standard Points ---
+            "+20 Points": [ 
+                // <-- TODO: Add paths from your "+20" folder
+            ],
+            "+15 Points": [ 
+                // <-- TODO: Add paths from your "+15" folder
+            ],
+            "+10 Points": [ 
+                // <-- TODO: Add paths from your "+10" folder
+            ],
+            "+5 Points": [
+                 "themes/Pizza/+5/pizza_plus_five00001.jpeg",
+                 "themes/Pizza/+5/pizza_plus_five00002.jpeg",
+                 "themes/Pizza/+5/pizza_plus_five00003.jpeg",
+                 "themes/Pizza/+5/pizza_plus_five00004.jpeg",
+                 "themes/Pizza/+5/pizza_plus_five00005.jpeg"
+            ],
+            "-5 Points": [
+                "themes/Pizza/-5/pizza_minus_five00001.jpeg",
+                "themes/Pizza/-5/pizza_minus_five00002.jpeg",
+                "themes/Pizza/-5/pizza_minus_five00003.jpeg"
+            ],
+            "-10 Points": [
+                 "themes/Pizza/-10/pizza_minus_ten00001.jpeg",
+                 "themes/Pizza/-10/pizza_minus_ten00002.jpeg",
+                 "themes/Pizza/-10/pizza_minus_ten00003.jpeg"
+            ],
+            "-20 Points": [
+                // <-- TODO: Add paths from your "-20" folder
+                // e.g., "themes/Pizza/-20/pizza_minus_twenty00001.jpeg"
+            ],
+            
+            // --- Special ---
+            "Double Your Points!": [
+                // <-- TODO: Add paths from your "double_points" folder
+                // e.g., "themes/Pizza/double_points/your_image.jpeg"
+            ],
+            "Lose Half Your Points!": [
+                "themes/Pizza/lose_half/pizza_halfpoints00001.jpeg",
+                "themes/Pizza/lose_half/pizza_halfpoints00002.jpeg",
+                "themes/Pizza/lose_half/pizza_halfpoints00003.jpeg",
+                "themes/Pizza/lose_half/pizza_halfpoints00004.jpeg"
+            ],
+            
+            // --- Transfers ---
+            "Take 10 Points!": [
+                "themes/Pizza/take_10/pizza_take_ten00001.jpeg",
+                "themes/Pizza/take_10/pizza_take_ten00002.jpeg",
+                "themes/Pizza/take_10/pizza_take_ten00003.jpeg",
+                "themes/Pizza/take_10/pizza_take_ten00004.jpeg"
+            ],
+            "Take 5 Points!": [
+                // <-- TODO: Add paths from your "take_5" folder
+            ],
+            "Give 10 Points!": [
+                // <-- TODO: Add paths from your "give_10" folder
+            ],
+            "Give 5 Points!": [
+                // <-- TODO: Add paths from your "give_5" folder
+            ]
+        },
+        
+        sounds: {
+            // <-- TODO: I saw your "Pizza - High" and "Pizza - Low" folders.
+            // Add the full path to the sound files inside them here.
+            lowGain: null,  // e.g., "themes/Pizza/Pizza - Low/your_sound.mp3"
+            highGain: null, // e.g., "themes/Pizza/Pizza - High/your_sound.mp3"
+            lowLoss: null,  // e.g., "themes/Pizza/Pizza - Low/your_sound.mp3"
+            highLoss: null,
+            special: null,
+            gameOver: null
+        }
+    }
 
 };

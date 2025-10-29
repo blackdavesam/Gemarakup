@@ -141,9 +141,9 @@ header {
     font-size: 1.1rem; /* Slightly smaller for better fit */
     text-transform: uppercase; 
     font-family: 'Russo One', sans-serif; 
-    white-space: nowrap; /* Prevent name wrapping */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Add ... if name too long */
+    /* white-space: nowrap; */ /* <-- REMOVED */
+    /* overflow: hidden; */ /* <-- REMOVED */
+    /* text-overflow: ellipsis; */ /* <-- REMOVED */
     flex-shrink: 1; /* Allow info to shrink if needed */
 }
 .team-avatar { 
@@ -151,8 +151,9 @@ header {
     flex-shrink: 0; /* Don't shrink avatar */
 }
 .team-name{
-     overflow: hidden;
-     text-overflow: ellipsis;
+     /* overflow: hidden; */ /* <-- REMOVED */
+     /* text-overflow: ellipsis; */ /* <-- REMOVED */
+     word-break: break-word; /* <-- ADDED */
 }
 
 .team-score { 
@@ -360,8 +361,8 @@ header {
 
 /* --- Transfer Points Modal --- */
 #transfer-team-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    display: flex; /* <-- MODIFIED */
+    flex-direction: column; /* <-- ADDED */
     gap: 1rem;
     margin-top: 1.5rem;
 }

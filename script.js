@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         doubleNextOutcome: false,
         keepFriendsCloseTargetTeamId: null,
         pendingEventForAnnul: null,
+        totalTurnsElapsed: 0, // <-- ADDED
     };
 
     let sfx = {};
@@ -426,6 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameState.doubleNextOutcome = false;
         gameState.keepFriendsCloseTargetTeamId = null;
         gameState.pendingEventForAnnul = null;
+        gameState.totalTurnsElapsed = 0; // <-- ADDED
 
         shuffledDeck = createShuffledDeck(numberOfSquares);
         window.shuffledDeck = shuffledDeck;
@@ -583,7 +585,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(eventCard) {
             console.log('[DEBUG] Popped card:', eventCard.name, '| Type:', eventCard.type, `| Squares Left: ${gameState.squaresLeft}`);
-            processEvent(eventCard);
+            
+            // --- NEW LOGIC FOR SAFE TURNS ---
+            let cardToProcess = eventCard;
+            // "Safe turns" will be one full round for every team
+            const safeTurns = gameState.teams.length; 
+            
+            const isNegativeCard = (cardToProcess.type === 'points' && cardToProcess.value < 0) || 
+                                 (cardToProcess.type === 'special' && cardToProcess.action === 'lose_half');
+
+            if (gameState.totalTurnsElapsed <= safeTurns && isNegativeCard) {
+                console.log(`[DEBUG] Safe turn (${gameState.totalTurnsElapsed}/${safeTurns}). Buffering negative card: ${cardToProcess.name}`);
+                
+                // Find a simple "+5" card to use as a replacement
+                const replacementCard = STANDARD_CARDS.find(c => c.value === 5) || { name: '+5 Points', type: 'points', value: 5 };
+                console.log(`[DEBUG] Using replacement card: ${replacementCard.name}`);
+                
+                // Put the negative card back in the deck, but not right at the end.
+                // We'll splice it somewhere in the first 3/4 of the remaining deck.
+                const randomIndex = Math.floor(Math.random() * (shuffledDeck.length * 0.75)); 
+                shuffledDeck.splice(randomIndex, 0, cardToProcess);
+                
+                cardToProcess = replacementCard; // We will process the safe +5 card instead
+            }
+            // --- END NEW LOGIC ---
+
+            processEvent(cardToProcess); // <-- MODIFIED to use cardToProcess
         } else {
              console.warn("[DEBUG] Popped undefined card from deck!");
             if (gameState.squaresLeft <= 0) {
@@ -652,6 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let valueToApply = eventCard.value;
             if (doubled) valueToApply *= 2;
             team.score += valueToApply;
+            team.score = Math.max(0, team.score); // <-- ADDED
             message += `<p>${eventCard.name}${doubled ? ' (x2!)' : ''}</p>`;
             if (originalValue >= 15) sfxToPlay = 'highGain';
             else if (originalValue > 0) sfxToPlay = 'lowGain';
@@ -666,7 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 message += `<p>Double Points!${doubled ? ' (x2!)' : ''}</p>`;
             } else if (eventCard.action === 'lose_half') {
                 if (!doubled) {
-                    team.score = Math.floor(team.score / 2);
+                    team.score = Math.max(0, Math.floor(team.score / 2)); // <-- MODIFIED
                     message += `<p>Lost half your points!</p>`;
                 } else {
                     message += `<p>Lost half your points! (Double Trouble Ignored)</p>`;
@@ -804,10 +832,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (eventCard.action === 'give') {
                     const pointsToGive = Math.min(currentTeam.score, eventCard.value);
                     currentTeam.score -= pointsToGive;
+                    currentTeam.score = Math.max(0, currentTeam.score); // <-- ADDED
                     gameState.teams[targetIndex].score += pointsToGive;
                 } else {
                      const pointsToTake = Math.min(gameState.teams[targetIndex].score, eventCard.value);
                      gameState.teams[targetIndex].score -= pointsToTake;
+                     gameState.teams[targetIndex].score = Math.max(0, gameState.teams[targetIndex].score); // <-- ADDED
                      currentTeam.score += pointsToTake;
                 }
                 hideModal(transferPointsModal);
@@ -918,6 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startTurn() {
         console.log(`[DEBUG] Starting turn for ${gameState.teams[gameState.currentTurn]?.name}. Mode: ${gameState.gameMode}`);
+        gameState.totalTurnsElapsed++; // <-- ADDED
         gameState.isTurnActive = false;
         updateScoreboard(); 
 
