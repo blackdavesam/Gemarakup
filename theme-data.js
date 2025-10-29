@@ -156,7 +156,7 @@ const themes = {
         description: "A delicious theme full of cheesy goodness.",
 
         // TODO: Add your main background/music files here
-        backgroundImageData: null, // "themes/Pizza/Your_Pizza_Background.jpeg",
+        backgroundImageData: "themes/Pizza/pizza_background.jpeg", // /Your_Pizza_Background.jpeg",
         backgroundMusicData: null, // "themes/Pizza/Your_Pizza_Music.mp3",
 
         palette: [], // Leave empty to auto-generate from background
@@ -188,6 +188,11 @@ const themes = {
                 // <-- TODO: Add paths from your "+15" folder
             ],
             "+10 Points": [ 
+                "themes/Pizza/+10/pizza_plus_ten00001.jpeg",
+                 "themes/Pizza/+10/pizza_plus_ten00002.jpeg",
+                 "themes/Pizza/+10/pizza_plus_ten00003.jpeg",
+                 "themes/Pizza/+10/pizza_plus_ten00004.jpeg",
+                 "themes/Pizza/+10/pizza_plus_ten00005.jpeg"
                 // <-- TODO: Add paths from your "+10" folder
             ],
             "+5 Points": [
