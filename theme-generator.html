@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemarakup! Theme Generator (Naming Convention)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem; background-color: #222; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .form-group {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #444;
+        }
+        .form-group:last-of-type { border-bottom: none; }
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 5px;
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        #generate-theme-btn {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        #output-code {
+            width: 100%;
+            height: 600px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            background: #1a1a1a;
+            color: #00f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        h1, h2 { text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gemarakup! Theme Generator</h1>
+        <p>This tool uses a strict file-naming convention. You must name your files exactly as shown in the output (e.g., `themename_plus_five00001.jpeg`).</p>
+
+        <div class="form-group">
+            <h2>1. Basic Info</h2>
+            <div class="grid-layout">
+                <div>
+                    <label for="theme-id">Theme ID (e.g., "newyork")</label>
+                    <input type="text" id="theme-id" placeholder="newyork">
+                </div>
+                <div>
+                    <label for="theme-name">Theme Name (e.g., "New York Edition")</label>
+                    <input type="text" id="theme-name" placeholder="Gemarakup New York Edition">
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <label for="theme-desc">Description</label>
+                <input type="text" id="theme-desc" placeholder="A theme about the Big Apple!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <h2>2. File Naming Info</h2>
+            <div class="grid-layout">
+                <div>
+                    <label for="base-name">Base File Name (e.g., "newyork")</label>
+                    <input type="text" id="base-name" placeholder="newyork">
+                </div>
+                <div>
+                    <label for="image-count">Images Per Card (e.g., 6)</label>
+                    <input type="number" id="image-count" value="6" style="width: 100%; padding: 10px; font-size: 1rem;">
+                </div>
+                <div>
+                    <label for="image-ext">Image Extension (e.g., "jpeg")</label>
+                    <input type="text" id="image-ext" value="jpeg" placeholder="jpeg, jpg, png">
+                </div>
+                </div>
+        </div>
+
+        <button id="generate-theme-btn">Generate Theme Code</button>
+
+        <div id="output-container" class="form-group hidden" style="margin-top: 2rem;">
+            <h2>3. Copy Your Code</h2>
+            <p>Copy the code below and paste it into your `theme-data.js`. Then, create your folders and files to match these paths exactly.</p>
+            <textarea id="output-code" readonly></textarea>
+        </div>
+    </div>
+
+    <script src="theme-generator.js"></script>
+</body>
+</html>

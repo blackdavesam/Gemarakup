@@ -8,19 +8,60 @@ document.addEventListener('DOMContentLoaded', () => {
             PROFILE: 'profile',
             SETUP: 'setup',
             GAME: 'game'
-            // DUNGEON page removed
         }
+    };
+    
+    // --- ITEM 1: New Global Sound Map ---
+    // This map defines all sounds. We will load these from the root /audio/ folder.
+    const GLOBAL_SOUND_MAP = {
+        // Card Sounds
+        plus_75: 'audio/plus_75.mp3',
+        plus_50: 'audio/plus_50.mp3',
+        plus_20: 'audio/plus_20.mp3',
+        plus_15: 'audio/plus_15.mp3',
+        plus_10: 'audio/plus_10.mp3',
+        plus_5: 'audio/plus_5.mp3',
+        minus_5: 'audio/minus_5.mp3',
+        minus_10: 'audio/minus_10.mp3',
+        minus_20: 'audio/minus_20.mp3',
+        minus_50: 'audio/minus_50.mp3',
+        double_points: 'audio/double_points.mp3',
+        lose_half: 'audio/lose_half.mp3',
+        take_10: 'audio/take_10.mp3',
+        give_10: 'audio/give_10.mp3',
+        take_5: 'audio/take_5.mp3',
+        give_5: 'audio/give_5.mp3',
+        // Game Sounds
+        gameOver: 'audio/gameOver.mp3',
+        special: 'audio/special.mp3' // A generic special sound for Annul, etc.
+    };
+
+    // This maps the card names from the game to the sound keys defined above.
+    const CARD_SOUND_KEY_MAP = {
+        "+75 Points (JACKPOT!)": "plus_75",
+        "+50 Points (Big Bonus!)": "plus_50",
+        "-50 Points (Disaster!)": "minus_50",
+        "+5 Points": "plus_5",
+        "+10 Points": "plus_10",
+        "+15 Points": "plus_15",
+        "+20 Points": "plus_20",
+        "-5 Points": "minus_5",
+        "-10 Points": "minus_10",
+        "-20 Points": "minus_20",
+        "Double Your Points!": "double_points",
+        "Lose Half Your Points!": "lose_half",
+        "Take 10 Points!": "take_10",
+        "Give 10 Points!": "give_10",
+        "Take 5 Points!": "take_5",
+        "Give 5 Points!": "give_5"
     };
 
     // --- 1. GET ALL UI ELEMENTS ---
     const profileContainer = document.getElementById('profile-container');
     const setupContainer = document.getElementById('setup-container');
-    // themeCreatorContainer removed
     const gameContainer = document.getElementById('game-container');
-    // dungeonContainer removed
 
     const changeProfileBtn = document.getElementById('change-profile-btn');
-    // creatorNavBtn removed
     const mainMenuNavBtn = document.getElementById('main-menu-nav-btn');
 
     const highScoreList = document.getElementById('high-score-list');
@@ -31,11 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('game-board');
     const scoreboard = document.getElementById('scoreboard');
     
-    // builtInThemesList is the new container
     const builtInThemesList = document.getElementById('built-in-themes-list');
+    const themeCarousel = document.getElementById('theme-carousel');
+const themeNavLeft = document.getElementById('theme-nav-left');
+const themeNavRight = document.getElementById('theme-nav-right');
+const themeInfoName = document.getElementById('theme-info-name');
+const themeInfoDescription = document.getElementById('theme-info-description');
+const themeStartBtn = document.getElementById('theme-start-btn');
 
-    // old theme/import buttons removed
-    const gameMenuBtn = document.getElementById('game-menu-btn');
+    const gameMenuBtn = document.getElementById('game-menu-btn'); // This is now hidden by CSS
     const backgroundMusic = document.getElementById('background-music');
 
     // Modals
@@ -109,18 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: '-10 Points', type: 'points', value: -10 },
         { name: '-20 Points', type: 'points', value: -20 }
     ];
-    // This list is now the definitive source for card names
-    // REMOVED: { name: 'Secret Dungeon Entrance!', type: 'dungeon' }
+
     const ALL_GAME_CARDS = [...CORE_CARDS, ...JACKPOT_CARDS, ...STANDARD_CARDS ].reduce((acc, card) => {
         if (!acc.find(c => c.name === card.name)) {
             acc.push(card);
         }
         return acc;
-    }, []).sort((a, b) => { // Sort with Dungeon last (dungeon is gone, but sort is harmless)
-        if (a.type === 'dungeon') return 1;
-        if (b.type === 'dungeon') return -1;
-        return (b.value || 0) - (a.value || 0);
-    });
+    }, []).sort((a, b) => (b.value || 0) - (a.value || 0));
 
     let shuffledDeck = [];
 
@@ -129,21 +169,23 @@ document.addEventListener('DOMContentLoaded', () => {
         teams: [],
         currentTurn: 0,
         squaresLeft: 0,
-        gameLength: 60,
+        gameLength: 60, // This will be set by the modal (36, 60, or 84)
         gameMode: 'math',
         mathDifficulty: 1,
         isTurnActive: false,
         doubleNextOutcome: false,
         keepFriendsCloseTargetTeamId: null,
         pendingEventForAnnul: null,
-        totalTurnsElapsed: 0, // <-- ADDED
+        totalTurnsElapsed: 0, 
     };
 
     let sfx = {};
+    let carouselThemeData = [];
+let carouselCellCount = 0;
+let carouselSelectedIndex = 0;
+let carouselTheta = 0;
     
-    // --- All Creator-related state removed ---
-    
-    let activeGameTheme = {}; // This will be set by the theme buttons
+    let activeGameTheme = {};
     let activeProfile = null;
     let colorThief = typeof ColorThief !== 'undefined' ? new ColorThief() : null;
     let db;
@@ -152,19 +194,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let questionTimer;
 
     // --- 3. HELPER & UTILITY FUNCTIONS ---
-    // fileToBase64 is NO LONGER NEEDED by the new system.
+    // (None needed for this update)
+    // [NEW FUNCTION - Add this]
+/**
+ * Shows a floating points animation over a team's scoreboard element.
+ * @param {number} teamIndex - The index of the team (0-3).
+ * @param {number} points - The points to display (e.g., 10, -5).
+ */
+function showPointsAnimation(teamIndex, points) {
+    if (points === 0) return; // Don't show for 0
+
+    // Find the specific team's div in the scoreboard
+    const teamDiv = scoreboard.querySelector(`.team:nth-child(${teamIndex + 1})`);
+    if (!teamDiv) return;
+
+    const animText = document.createElement('div');
+    animText.classList.add('points-animation');
+
+    if (points > 0) {
+        animText.textContent = `+${points}`;
+        animText.classList.add('positive');
+    } else {
+        animText.textContent = `${points}`; // Already has -
+        animText.classList.add('negative');
+    }
+
+    // Position the animation over the scoreboard
+    const rect = teamDiv.getBoundingClientRect();
+    animText.style.left = `${rect.left + rect.width / 2 - 20}px`;
+    animText.style.top = `${rect.top + 10}px`;
+
+    document.body.appendChild(animText);
+
+    // Remove the element after the animation finishes
+    setTimeout(() => {
+        animText.remove();
+    }, 1500);
+}
 
     // --- 4. DATABASE & THEME MANAGEMENT ---
      function initDB() {
-        // Reduced DB. We no longer need the 'themes' store.
-        const request = indexedDB.open('GemaraKUpGameDB', 7); // Incremented version
+        const request = indexedDB.open('GemaraKUpGameDB', 7); 
         request.onerror = (event) => console.error("Database error:", event.target.errorCode);
         request.onupgradeneeded = (event) => {
             console.log("Database upgrade needed.");
             const db = event.target.result;
             if (!db.objectStoreNames.contains('profiles')) db.createObjectStore('profiles', { keyPath: 'id', autoIncrement: true });
             
-            // Delete the old, unused 'themes' store
             if (db.objectStoreNames.contains('themes')) db.deleteObjectStore('themes');
 
             if (!db.objectStoreNames.contains('highscores')) {
@@ -181,60 +257,95 @@ document.addEventListener('DOMContentLoaded', () => {
             db = event.target.result;
             console.log("Database initialized successfully.");
             
-            // NOW we load the profiles AND the new themes
             showProfileScreen();
-            loadBuiltInThemes(); // Load themes into the setup page
+            loadBuiltInThemes();
         };
     }
 
-    // --- NEW FUNCTION ---
-    // This reads theme-data.js and builds the buttons on the setup page
-    function loadBuiltInThemes() {
-        if (!builtInThemesList) return;
-        
-        // `themes` is the global variable from theme-data.js
-        if (typeof themes === 'undefined' || Object.keys(themes).length === 0) {
-            builtInThemesList.innerHTML = "<p>Error: `theme-data.js` not loaded or is empty.</p>";
-            return;
-        }
+    // [NEW CODE - Replaces the old function]
+function loadBuiltInThemes() {
+    if (!themeCarousel) return; // Check for the new element
 
-        builtInThemesList.innerHTML = ''; // Clear list
-
-        for (const themeId in themes) {
-            const theme = themes[themeId];
-            const themeCard = document.createElement('div');
-            // Use a different class to avoid confusion
-            themeCard.className = 'theme-selection-card'; 
-            
-            const buttonId = `start-theme-${themeId}`;
-
-            themeCard.innerHTML = `
-                <h2 style="font-size: 1.8rem;">${theme.name}</h2>
-                <p>${theme.description || 'A custom game theme.'}</p>
-                <button id="${buttonId}" class="theme-start-btn">Start Game</button>
-            `;
-            
-            builtInThemesList.appendChild(themeCard);
-
-            // Add the event listener for this new button
-            const themeButton = document.getElementById(buttonId);
-            if (themeButton) {
-                themeButton.addEventListener('click', () => {
-                    console.log(`[DEBUG] Selected theme: ${theme.name}`);
-                    
-                    // Set the active theme, just like your baseball game!
-                    activeGameTheme = theme; 
-                    
-                    // Show game settings
-                    showModal(gameSettingsModal);
-                });
-            }
-        }
+    // Clear old data
+    themeCarousel.innerHTML = '';
+    carouselThemeData = [];
+    carouselSelectedIndex = 0;
+    
+    if (typeof themes === 'undefined' || Object.keys(themes).length === 0) {
+        themeInfoName.textContent = "Error";
+        themeInfoDescription.textContent = "theme-data.js not loaded or is empty.";
+        return;
     }
 
-    // --- ALL IMPORT/EXPORT/SAVE FUNCTIONS DELETED ---
+    // 1. Populate the carouselThemeData array
+    for (const themeId in themes) {
+        carouselThemeData.push({ id: themeId, ...themes[themeId] });
+    }
 
+    carouselCellCount = carouselThemeData.length;
+    carouselTheta = 360 / carouselCellCount;
 
+    // 2. Create a "cell" for each theme
+    carouselThemeData.forEach((theme, index) => {
+        const cell = document.createElement('div');
+        cell.className = 'theme-cell';
+        
+        // Use background image if available
+        if (theme.backgroundImageData) {
+            cell.style.backgroundImage = `url("${theme.backgroundImageData}")`;
+        }
+
+        // Add overlay with info
+        cell.innerHTML = `
+            <div class="theme-cell-overlay">
+                <h3>${theme.name}</h3>
+                <p>${theme.description || 'A custom game theme.'}</p>
+            </div>
+        `;
+        
+        // Calculate the 3D position of this cell
+        const angle = carouselTheta * index;
+        const translateZ = (carouselCellCount > 8) ? 450 : (carouselCellCount * 40); // Adjust radius
+        cell.style.transform = `rotateY(${angle}deg) translateZ(${translateZ}px)`;
+        
+        themeCarousel.appendChild(cell);
+    });
+
+    // 3. Set up navigation
+    themeNavLeft.onclick = () => {
+        carouselSelectedIndex--;
+        updateCarousel();
+    };
+
+    themeNavRight.onclick = () => {
+        carouselSelectedIndex++;
+        updateCarousel();
+    };
+
+    // 4. Set up the "Start Game" button
+    themeStartBtn.onclick = () => {
+        // Get the currently selected theme
+        activeGameTheme = carouselThemeData[carouselSelectedIndex];
+        console.log(`[DEBUG] Selected theme: ${activeGameTheme.name}`);
+        showModal(gameSettingsModal);
+    };
+
+    // 5. Show the first theme
+    updateCarousel();
+}
+// [NEW FUNCTION - Add this]
+function updateCarousel() {
+    // This function spins the whole carousel
+    const angle = carouselTheta * carouselSelectedIndex * -1;
+    themeCarousel.style.transform = `translateZ(-${(carouselCellCount > 8) ? 450 : (carouselCellCount * 40)}px) rotateY(${angle}deg)`;
+
+    // Update the info display
+    const currentTheme = carouselThemeData[carouselSelectedIndex];
+    if (currentTheme) {
+        themeInfoName.textContent = currentTheme.name;
+        themeInfoDescription.textContent = currentTheme.description || 'A custom game theme.';
+    }
+}
     function loadHighScores(scope = 'profile') {
         if (!db) { console.error("loadHighScores: Database not initialized."); return; }
         highScoreList.innerHTML = '';
@@ -331,39 +442,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. GAME LOGIC ---
 
-    function loadSoundEffects(theme) {
-        Howler.unload();
-        sfx = {};
+    // --- ITEM 1: Rewritten sound loading function ---
+    function loadSoundEffects() {
+        Howler.unload(); // Unload all previous sounds
+        sfx = {}; // Clear the sfx object
 
-        // Use theme.sounds (which contains paths) or fall back to defaults
-        const themeSounds = theme.sounds || {};
-        const defaultSounds = {
-            lowGain: 'https://cdn.pixabay.com/audio/2022/03/15/audio_a46b732152.mp3',
-            highGain: 'https://cdn.pixabay.com/audio/2022/11/17/audio_821896131b.mp3',
-            lowLoss: 'https://cdn.pixabay.com/audio/2021/08/04/audio_12b0a82b13.mp3',
-            highLoss: 'https://cdn.pixabay.com/audio/2022/03/10/audio_e0828d18a0.mp3',
-            special: 'https://cdn.pixabay.com/audio/2022/03/22/audio_6069971ce7.mp3',
-            gameOver: 'https://cdn.pixabay.com/audio/2022/08/23/audio_a831fce34e.mp3'
-        };
+        console.log("Loading global sound effects...");
 
-        const soundNames = ['lowGain', 'highGain', 'lowLoss', 'highLoss', 'special', 'gameOver'];
-
-        soundNames.forEach(name => {
-            // Get the path from the theme, or the default path
-            const src = themeSounds[name] || defaultSounds[name];
-            if (src) {
-                sfx[name] = new Howl({
-                     src: [src], // Howler works perfectly with paths
+        // Loop through our new global map and load each sound
+        for (const key in GLOBAL_SOUND_MAP) {
+            const path = GLOBAL_SOUND_MAP[key];
+            if (path) {
+                sfx[key] = new Howl({
+                     src: [path],
                      html5: true
                  });
-                 sfx[name].once('load', () => console.log(`Sound "${name}" loaded from ${src}`));
-                 sfx[name].on('loaderror', (id, err) => console.error(`Error loading sound "${name}" from ${src}:`, err));
+                 sfx[key].once('load', () => console.log(`Sound "${key}" loaded from ${path}`));
+                 sfx[key].on('loaderror', (id, err) => console.error(`Error loading sound "${key}" from ${path}:`, err));
             } else {
-                 console.warn(`No source found for sound "${name}".`);
+                 console.warn(`No source found for sound "${key}".`);
             }
-        });
-
-        console.log("Sound effect loading initiated.");
+        }
+        console.log("Global sound effect loading initiated.");
+    }
+    
+    // Helper to play sounds safely
+    function playSound(soundKey) {
+        if (soundKey && sfx[soundKey] && typeof sfx[soundKey].play === 'function') {
+             sfx[soundKey].play();
+        } else if (soundKey) {
+             console.warn(`Sound effect "${soundKey}" not loaded or invalid.`);
+        }
     }
 
 
@@ -384,8 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
              if (workingDeck.length < numberOfSquares) workingDeck.push(card);
         });
 
-        // --- ENTIRE DUNGEON CARD LOGIC BLOCK REMOVED ---
-
         const remainingSlots = numberOfSquares - workingDeck.length;
         if (remainingSlots > 0) {
             for (let i = 0; i < remainingSlots; i++) {
@@ -402,18 +509,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const finalDeck = workingDeck.slice(0, numberOfSquares);
 
-        // const dungeonCount = finalDeck.filter(card => card && card.type === 'dungeon').length; // REMOVED
-        console.log(`[DEBUG] Created deck of size ${finalDeck.length}.`); // MODIFIED
+        console.log(`[DEBUG] Created deck of size ${finalDeck.length}.`);
 
         return finalDeck;
     }
 
 
-    // --- MODIFIED: startGame ---
-    // Now uses the pre-loaded activeGameTheme
     function startGame(numberOfSquares) {
-        numberOfSquares = parseInt(numberOfSquares, 10) || 60;
-        numberOfSquares = Math.max(10, Math.min(numberOfSquares, 100));
+        // This value now comes from the modal (36, 60, or 84)
+        numberOfSquares = parseInt(numberOfSquares, 10);
 
         navigateTo(CONSTANTS.PAGES.GAME);
         gameState.currentTurn = 0;
@@ -427,17 +531,15 @@ document.addEventListener('DOMContentLoaded', () => {
         gameState.doubleNextOutcome = false;
         gameState.keepFriendsCloseTargetTeamId = null;
         gameState.pendingEventForAnnul = null;
-        gameState.totalTurnsElapsed = 0; // <-- ADDED
+        gameState.totalTurnsElapsed = 0;
 
         shuffledDeck = createShuffledDeck(numberOfSquares);
         window.shuffledDeck = shuffledDeck;
 
-        // --- NEW LOGIC for file paths ---
         if (activeGameTheme.backgroundImageData) {
-            // Check if it's a path or Base64
             const url = activeGameTheme.backgroundImageData.startsWith('data:') 
                 ? activeGameTheme.backgroundImageData 
-                : `${activeGameTheme.backgroundImageData}`; // Assumes relative path
+                : `${activeGameTheme.backgroundImageData}`; 
             
             document.body.style.backgroundImage = `url(${url})`;
             document.body.style.backgroundSize = 'cover';
@@ -460,9 +562,10 @@ document.addEventListener('DOMContentLoaded', () => {
              backgroundMusic.pause();
              backgroundMusic.src = '';
         }
-        // --- END NEW LOGIC ---
 
-        loadSoundEffects(activeGameTheme);
+        // --- ITEM 1: Load global sounds ---
+        loadSoundEffects(); 
+        
         createBoard(numberOfSquares);
         startTurn();
     }
@@ -473,26 +576,40 @@ document.addEventListener('DOMContentLoaded', () => {
               console.error("Cannot create board with 0 or negative squares.");
               return;
          }
-        const cols = Math.ceil(Math.sqrt(numberOfSquares));
-        const rows = Math.ceil(numberOfSquares / cols);
-        const actualSquares = cols * rows;
+        // [NEW CODE]
+// This new logic finds a "cleaner" grid (e.g., 10x6 for 60 squares)
+let cols = Math.ceil(Math.sqrt(numberOfSquares));
+let rows = Math.ceil(numberOfSquares / cols);
 
-        board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+// Smart factor finder for our specific game lengths
+if (numberOfSquares === 36) { // 6x6
+    cols = 6;
+    rows = 6;
+} else if (numberOfSquares === 60) { // 10x6
+    cols = 10;
+    rows = 6;
+} else if (numberOfSquares === 84) { // 12x7
+    cols = 12;
+    rows = 7;
+}
 
-        // --- UPDATED: Color Palette Logic ---
-        // If palette is empty in theme, try to generate one from the BG image
+const actualSquares = cols * rows;
+
+board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+// We REMOVED the line for gridTemplateRows. This is critical.
+// This stops the JS from conflicting with the CSS aspect-ratio.
+
         let colors = activeGameTheme.palette;
         if (!colors || colors.length === 0) {
             if (activeGameTheme.backgroundImageData && colorThief) {
                 const img = new Image();
-                img.crossOrigin = "Anonymous"; // In case the path is to a different domain
+                img.crossOrigin = "Anonymous"; 
                 img.onload = () => {
                     try {
                         const palette = colorThief.getPalette(img, 8);
                         colors = palette.map(rgb => `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`);
                         console.log("Generated palette from background:", colors);
-                        applyColors(colors); // Re-apply colors after image load
+                        applyColors(colors); 
                     } catch (e) {
                         console.error("ColorThief error, using default colors:", e);
                         colors = DEFAULT_COLORS;
@@ -513,7 +630,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!colors || colors.length === 0) {
              colors = DEFAULT_COLORS;
         }
-        // --- END UPDATED ---
 
         const useEmojis = activeGameTheme.emojis && activeGameTheme.emojis.length > 0;
         const emojiMode = activeGameTheme.emojiMode || 'overlay';
@@ -532,17 +648,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 0; i < actualSquares; i++) {
             const square = document.createElement('div');
-            square.classList.add('square');
-
+// [NEW CODE]
+            square.classList.add('square', 'square-enter');
             if (i < numberOfSquares) {
                  if (useEmojis) {
                     square.textContent = activeGameTheme.emojis[i % activeGameTheme.emojis.length];
-                    let fontSize = Math.max(1, 4 / Math.sqrt(cols));
-                     square.style.fontSize = `${fontSize}rem`;
-                     square.style.lineHeight = '1';
+                    // --- ITEM 2: Larger Emojis ---
+                    // Increased '5.5' from '4'
+                    let fontSize = Math.max(1.5, 7 / Math.sqrt(cols));
+                    square.style.fontSize = `${fontSize}rem`;
+                    square.style.lineHeight = '1';
                 }
 
-                // Apply initial colors (might be replaced by async palette)
                 if (useEmojis && emojiMode === 'replace') {
                     square.style.backgroundColor = 'var(--light-bg)';
                      square.style.color = colors[i % colors.length];
@@ -555,9 +672,17 @@ document.addEventListener('DOMContentLoaded', () => {
                  square.style.pointerEvents = 'none';
             }
             board.appendChild(square);
+            // --- Animate squares appearing ---
+const allSquares = board.querySelectorAll('.square-enter');
+allSquares.forEach((sq, index) => {
+    // Stagger the animation
+    setTimeout(() => {
+        sq.style.opacity = '1';
+        sq.style.transform = 'scale(1)';
+    }, index * 15); // 15ms delay per square
+});
         }
         
-        // Apply colors if they were available immediately
         if (colors.length > 0) {
             applyColors(colors);
         }
@@ -572,23 +697,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!clickedSquare || clickedSquare.classList.contains('flipped')) { return; }
 
         if (gameState.keepFriendsCloseTargetTeamId) {
-            // handleKeepFriendsCloseSelection(clickedSquare); // This entire system is part of dungeon.js
-            console.warn("KFC active but no handler!"); // Safety log
+            console.warn("KFC active but no handler!");
             return;
         }
 
         gameState.isTurnActive = false;
 
-        clickedSquare.classList.add('flipped');
-        gameState.squaresLeft--;
+clickedSquare.classList.add('flipped');
+clickedSquare.style.opacity = '0';
+clickedSquare.style.transform = 'rotateY(180deg) scale(0.5)';
+clickedSquare.style.pointerEvents = 'none';
+clickedSquare.style.cursor = 'default';        gameState.squaresLeft--;
         const eventCard = shuffledDeck.pop();
 
         if(eventCard) {
             console.log('[DEBUG] Popped card:', eventCard.name, '| Type:', eventCard.type, `| Squares Left: ${gameState.squaresLeft}`);
             
-            // --- NEW LOGIC FOR SAFE TURNS ---
             let cardToProcess = eventCard;
-            // "Safe turns" will be one full round for every team
             const safeTurns = gameState.teams.length; 
             
             const isNegativeCard = (cardToProcess.type === 'points' && cardToProcess.value < 0) || 
@@ -597,20 +722,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gameState.totalTurnsElapsed <= safeTurns && isNegativeCard) {
                 console.log(`[DEBUG] Safe turn (${gameState.totalTurnsElapsed}/${safeTurns}). Buffering negative card: ${cardToProcess.name}`);
                 
-                // Find a simple "+5" card to use as a replacement
                 const replacementCard = STANDARD_CARDS.find(c => c.value === 5) || { name: '+5 Points', type: 'points', value: 5 };
                 console.log(`[DEBUG] Using replacement card: ${replacementCard.name}`);
                 
-                // Put the negative card back in the deck, but not right at the end.
-                // We'll splice it somewhere in the first 3/4 of the remaining deck.
                 const randomIndex = Math.floor(Math.random() * (shuffledDeck.length * 0.75)); 
                 shuffledDeck.splice(randomIndex, 0, cardToProcess);
                 
-                cardToProcess = replacementCard; // We will process the safe +5 card instead
+                cardToProcess = replacementCard;
             }
-            // --- END NEW LOGIC ---
 
-            processEvent(cardToProcess); // <-- MODIFIED to use cardToProcess
+            processEvent(cardToProcess);
         } else {
              console.warn("[DEBUG] Popped undefined card from deck!");
             if (gameState.squaresLeft <= 0) {
@@ -637,11 +758,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const isOwnTurn = team.dbId === gameState.teams[gameState.currentTurn].dbId;
 
         let message = `<h2>${team.avatar} ${team.name}</h2>`;
-        let sfxToPlay = null;
         let selectedImageUrl = null;
-        let originalValue = eventCard.value;
+        let soundKeyToPlay = CARD_SOUND_KEY_MAP[eventCard.name]; // --- ITEM 1: Get sound key ---
 
-        // --- Annul Card Check (Triggers prompt) ---
         const isNegativeEvent = (eventCard.type === 'points' && eventCard.value < 0) ||
                                 (eventCard.type === 'special' && eventCard.action === 'lose_half') ||
                                 (eventCard.type === 'transfer' && eventCard.action === 'give');
@@ -655,7 +774,6 @@ document.addEventListener('DOMContentLoaded', () => {
             promptToUseAnnulCard(team, eventCard);
             return;
         }
-        // --- End Annul Card Check ---
 
         let doubled = false;
         if (gameState.doubleNextOutcome && isOwnTurn) {
@@ -664,37 +782,30 @@ document.addEventListener('DOMContentLoaded', () => {
             gameState.doubleNextOutcome = false;
         }
 
-        // --- UPDATED: Image Loading ---
-        // Images are now file paths
-        // REMOVED: || activeGameTheme.images?.['Secret Dungeon Entrance!']
         const imagePool = activeGameTheme.images?.[eventCard.name]; 
         if (imagePool && imagePool.length > 0) {
             const randomIndex = Math.floor(Math.random() * imagePool.length);
-            selectedImageUrl = imagePool[randomIndex]; // This is now a path
+            selectedImageUrl = imagePool[randomIndex]; 
         }
-        // --- END UPDATED ---
-
 
         if (eventCard.type === 'points') {
             let valueToApply = eventCard.value;
             if (doubled) valueToApply *= 2;
             team.score += valueToApply;
-            team.score = Math.max(0, team.score); // <-- ADDED
+            // [NEW CODE]
+            showPointsAnimation(targetTeamIndex, valueToApply);
+            team.score = Math.max(0, team.score);
             message += `<p>${eventCard.name}${doubled ? ' (x2!)' : ''}</p>`;
-            if (originalValue >= 15) sfxToPlay = 'highGain';
-            else if (originalValue > 0) sfxToPlay = 'lowGain';
-            else if (originalValue <= -15) sfxToPlay = 'highLoss';
-            else sfxToPlay = 'lowLoss';
+            // Sound key is already set
 
         } else if (eventCard.type === 'special') {
-            sfxToPlay = 'special';
             if (eventCard.action === 'double') {
                 const multiplier = doubled ? 4 : 2;
                 team.score *= multiplier;
                 message += `<p>Double Points!${doubled ? ' (x2!)' : ''}</p>`;
             } else if (eventCard.action === 'lose_half') {
                 if (!doubled) {
-                    team.score = Math.max(0, Math.floor(team.score / 2)); // <-- MODIFIED
+                    team.score = Math.max(0, Math.floor(team.score / 2));
                     message += `<p>Lost half your points!</p>`;
                 } else {
                     message += `<p>Lost half your points! (Double Trouble Ignored)</p>`;
@@ -702,21 +813,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else if (eventCard.type === 'transfer') {
              if (isOwnTurn) {
+                 playSound(soundKeyToPlay); // Play sound before showing modal
                  handleTransferEvent(eventCard);
-                 return;
+                 return; // handleTransferEvent will call endTurn
              } else {
                  message += `<p>"${eventCard.name}" has no effect on chosen target!</p>`;
-                 sfxToPlay = 'lowLoss';
+                 soundKeyToPlay = 'minus_5'; // Play a generic low-loss sound
              }
-        // --- ENTIRE 'dungeon' BLOCK REMOVED ---
         } else {
              console.warn(`[DEBUG] Encountered unknown card type: "${eventCard.type}" for card "${eventCard.name}"`);
              message += `<p>An unusual event occurred!</p>`;
              selectedImageUrl = null;
-             sfxToPlay = 'special';
+             soundKeyToPlay = 'special';
         }
  
         updateScoreboard();
+        playSound(soundKeyToPlay); // --- ITEM 1: Play the unique sound ---
 
         const turnEndDelay = selectedImageUrl ? 300 : 2000;
 
@@ -729,12 +841,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             showEventModal(message);
             setTimeout(endTurn, turnEndDelay);
-        }
-
-        if (sfxToPlay && sfx[sfxToPlay] && typeof sfx[sfxToPlay].play === 'function') {
-             sfx[sfxToPlay].play();
-        } else if (sfxToPlay) {
-             console.warn(`Sound effect "${sfxToPlay}" not loaded or invalid.`);
         }
 
         if (gameState.keepFriendsCloseTargetTeamId) {
@@ -776,7 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const team = gameState.teams[teamIndex];
             showEventModal(`<h2>${team.avatar} ${team.name}</h2><p>Used 'Get Out of Jail Free' card! 🃏 Outcome annulled.</p>`);
-            if (sfx.special && typeof sfx.special.play === 'function') sfx.special.play();
+            playSound('special');
 
             setTimeout(endTurn, 2000);
 
@@ -807,6 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2100);
     }
 
+    // --- ITEM 8: Updated Transfer Event Logic ---
     function handleTransferEvent(eventCard) {
         const currentTeam = gameState.teams[gameState.currentTurn];
         const otherTeams = gameState.teams.filter(team => team.dbId !== currentTeam.dbId);
@@ -816,7 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if(sfx.special && typeof sfx.special.play === 'function') sfx.special.play();
+        // Sound is now played *before* this function is called.
 
         transferTitle.textContent = eventCard.name;
         transferDescription.textContent = eventCard.action === 'give' ? `Choose a team to give ${eventCard.value} points to.` : `Choose a team to take ${eventCard.value} points from.`;
@@ -832,17 +939,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (eventCard.action === 'give') {
                     const pointsToGive = Math.min(currentTeam.score, eventCard.value);
                     currentTeam.score -= pointsToGive;
-                    currentTeam.score = Math.max(0, currentTeam.score); // <-- ADDED
+                    currentTeam.score = Math.max(0, currentTeam.score);
                     gameState.teams[targetIndex].score += pointsToGive;
+                    showPointsAnimation(gameState.currentTurn, -pointsToGive);
+    showPointsAnimation(targetIndex, pointsToGive);
                 } else {
                      const pointsToTake = Math.min(gameState.teams[targetIndex].score, eventCard.value);
                      gameState.teams[targetIndex].score -= pointsToTake;
-                     gameState.teams[targetIndex].score = Math.max(0, gameState.teams[targetIndex].score); // <-- ADDED
+                     gameState.teams[targetIndex].score = Math.max(0, gameState.teams[targetIndex].score);
                      currentTeam.score += pointsToTake;
+                     showPointsAnimation(targetIndex, -pointsToTake);
+    showPointsAnimation(gameState.currentTurn, pointsToTake);
                 }
+                
                 hideModal(transferPointsModal);
                 updateScoreboard();
-                setTimeout(endTurn, 500);
+
+                // --- NEW LOGIC: Show image after selection ---
+                const imagePool = activeGameTheme.images?.[eventCard.name]; 
+                let selectedImageUrl = null;
+                if (imagePool && imagePool.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * imagePool.length);
+                    selectedImageUrl = imagePool[randomIndex];
+                }
+
+                // Create a message based on the action
+                let transferMessage = `<h2>${currentTeam.avatar} ${currentTeam.name}</h2>`;
+                if (eventCard.action === 'give') {
+                    transferMessage += `<p>Gave ${eventCard.value} points to ${targetTeam.avatar} ${targetTeam.name}!</p>`;
+                } else {
+                    transferMessage += `<p>Took ${eventCard.value} points from ${targetTeam.avatar} ${targetTeam.name}!</p>`;
+                }
+
+                if (selectedImageUrl) {
+                    showFullscreenModal(selectedImageUrl, transferMessage);
+                    fullscreenEvent.onclick = () => {
+                        hideModal(fullscreenEvent);
+                        setTimeout(endTurn, 500);
+                    };
+                } else {
+                    showEventModal(transferMessage); // Show simple modal if no image
+                    setTimeout(endTurn, 2000);
+                }
+                // --- END NEW LOGIC ---
             };
             transferTeamButtons.appendChild(btn);
         });
@@ -866,7 +1005,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const isActive = isGameBoard && index === gameState.currentTurn;
             const activeClass = isActive ? 'active-turn' : '';
 
-            // This is the logic for the "Get out of Jail" card emoji
             const annulCardIcon = team.hasAnnulCard ? ' <span title="Has Annul Card">🃏</span>' : '';
 
             return `<div class="team ${activeClass} ${rankClass}">
@@ -892,7 +1030,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function endGame() {
         console.log("[DEBUG] Game ending.");
         gameState.isTurnActive = false;
-        if(sfx.gameOver && typeof sfx.gameOver.play === 'function') sfx.gameOver.play();
+        playSound('gameOver');
 
         const winner = [...gameState.teams].sort((a, b) => b.score - a.score)[0];
 
@@ -948,15 +1086,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startTurn() {
         console.log(`[DEBUG] Starting turn for ${gameState.teams[gameState.currentTurn]?.name}. Mode: ${gameState.gameMode}`);
-        gameState.totalTurnsElapsed++; // <-- ADDED
+        gameState.totalTurnsElapsed++; 
         gameState.isTurnActive = false;
         updateScoreboard(); 
 
         if (gameState.keepFriendsCloseTargetTeamId) {
-             // const targetTeam = gameState.teams.find(t=> t.dbId === gameState.keepFriendsCloseTargetTeamId); // Logic removed
-             // const actingTeam = gameState.teams[gameState.currentTurn]; // Logic removed
              console.log("[DEBUG] Keep Friends Close is active... but dungeon is removed. Resetting.");
-             showEventModal(`<h2>KFC Error!</h2><p>Resetting turn.</p>`); // Safety
+             showEventModal(`<h2>KFC Error!</h2><p>Resetting turn.</p>`);
              gameState.keepFriendsCloseTargetTeamId = null;
              gameState.isTurnActive = true;
              return;
@@ -1008,8 +1144,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             const team = gameState.teams[gameState.currentTurn];
             team.score = Math.max(0, team.score - 5);
+            showPointsAnimation(gameState.currentTurn, -5);
             updateScoreboard();
-            if(sfx.lowLoss && typeof sfx.lowLoss.play === 'function') sfx.lowLoss.play();
+            playSound('minus_5');
             showEventModal(`<h2>Incorrect!</h2><p>-5 points for ${team.name}</p>`);
             setTimeout(endTurn, 2000);
         }
@@ -1118,18 +1255,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // --- renderThemeCreatorInputs() DELETED ---
-
-
-    // --- REPLACED: navigateTo() ---
     function navigateTo(page) {
         const pages = {
             [CONSTANTS.PAGES.SETUP]: setupContainer,
-            // [CONSTANTS.PAGES.CREATOR]: themeCreatorContainer, // Removed
             [CONSTANTS.PAGES.GAME]: gameContainer,
             [CONSTANTS.PAGES.PROFILE]: profileContainer,
-            // [CONSTANTS.PAGES.DUNGEON]: dungeonContainer // Removed
         };
 
         console.log(`[DEBUG] Navigating to page: "${page}"`);
@@ -1144,28 +1274,22 @@ document.addEventListener('DOMContentLoaded', () => {
              page = CONSTANTS.PAGES.SETUP;
         }
 
-        // const isCreator = page === CONSTANTS.PAGES.CREATOR; // Removed
         const isSetup = page === CONSTANTS.PAGES.SETUP;
-        // MODIFIED: isGameOrDungeon
-        const isGameOrDungeon = page === CONSTANTS.PAGES.GAME;
+        const isGame = page === CONSTANTS.PAGES.GAME;
         const isProfile = page === CONSTANTS.PAGES.PROFILE;
 
-        // creatorNavBtn.classList.toggle('hidden', !isSetup); // Removed
         mainMenuNavBtn.classList.toggle('hidden', isSetup || isProfile);
         changeProfileBtn.classList.toggle('hidden', !isSetup);
 
-        if (isGameOrDungeon) { mainMenuNavBtn.textContent = "End Game"; }
-        // else if (isCreator) { mainMenuNavBtn.textContent = "Main Menu"; } // Removed
+        if (isGame) { mainMenuNavBtn.textContent = "End Game"; }
         else { mainMenuNavBtn.textContent = "Main Menu"; }
 
 
         if (isSetup) {
-            // loadBuiltInThemes(); // This is now called once in initDB()
             loadHighScores('profile');
             if (activeProfile?.name) classHsBtn.textContent = `${activeProfile.name}'s Ranking`;
             else classHsBtn.textContent = 'Class Ranking';
         }
-        // if (isCreator) { ... } // Removed
         if (isProfile) { classHsBtn.textContent = 'Class Ranking'; }
     }
 
@@ -1543,15 +1667,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 8. EVENT LISTENERS ---
     
-    // --- All creator-related listeners are GONE ---
-
     // Header Buttons
     changeProfileBtn.addEventListener('click', showProfileScreen);
-    // creatorNavBtn listener removed
+    
+    // --- ITEM 9: Updated Main Menu Button Logic ---
     mainMenuNavBtn.addEventListener('click', () => {
-        // MODIFIED: Removed dungeon check
         if (gameContainer && !gameContainer.classList.contains('hidden')) {
-             if (confirm("End current game and return to menu?")) resetToMenu();
+             // Now calls endGame() instead of resetToMenu()
+             if (confirm("Are you sure you want to end the current game and show the final scores?")) {
+                 endGame(); 
+             }
         } else {
              navigateTo(CONSTANTS.PAGES.SETUP);
         }
@@ -1561,17 +1686,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-profile-btn').addEventListener('click', handleAddProfile);
 
     // Setup Screen Buttons
-    // defaultStartBtn is now created dynamically by loadBuiltInThemes()
-    // importThemeBtn listeners removed
     classHsBtn.addEventListener('click', () => loadHighScores('profile'));
     globalHsBtn.addEventListener('click', () => loadHighScores('global'));
 
-    // --- All custom theme buttons removed ---
-
     // Game Screen Buttons
     gameMenuBtn.addEventListener('click', () => {
-         if (confirm("Are you sure you want to end the current game and return to the menu?")) {
-             resetToMenu();
+         // This button is hidden, but the listener is harmless
+         if (confirm("Are you sure you want to end the current game?")) {
+             endGame(); // Changed to endGame() for consistency
          }
     });
 
@@ -1583,7 +1705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedDifficulty = document.querySelector('input[name="math-difficulty"]:checked').value;
 
         gameState.gameMode = selectedMode;
-        gameState.gameLength = parseInt(selectedLength, 10);
+        gameState.gameLength = parseInt(selectedLength, 10); // This is now 36, 60, or 84
         gameState.mathDifficulty = parseInt(selectedDifficulty, 10);
         const totalTeams = parseInt(selectedTeams, 10);
 
@@ -1596,13 +1718,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     // --- 9. INITIALIZE THE APP ---
-    initDB(); // This now also triggers loadBuiltInThemes() on success
+    initDB(); 
 
 
-    // --- 10. EXPOSE FUNCTIONS/VARS TO GLOBAL SCOPE (for dungeon.js) ---
-    // These are still here in case dungeon.js is added back, but the functions
-    // it relies on are no longer defined (e.g., enterDungeon).
-    // The handleKeepFriendsCloseSelection function itself is removed.
+    // --- 10. EXPOSE FUNCTIONS/VARS TO GLOBAL SCOPE ---
     window.CONSTANTS = CONSTANTS;
     window.gameState = gameState;
     window.sfx = sfx;
@@ -1627,9 +1746,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.startTurn = startTurn;
     window.processEvent = processEvent;
     window.endGame = endGame;
-    
-    // REMOVED: window.handleKeepFriendsCloseSelection
-    
+        
     window.shuffledDeck = shuffledDeck;
 
 }); // End DOMContentLoaded

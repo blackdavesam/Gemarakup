@@ -17,9 +17,9 @@ const themes = {
         backgroundImageData: null,
         backgroundMusicData: null,
         images: {}, // No custom images
-        sounds: {}, // No custom sounds
         emojis: [],
         emojiMode: 'overlay'
+        // 'sounds' object removed
     },
 
     "football": { // Theme ID
@@ -125,53 +125,186 @@ const themes = {
                 "themes/Football/Half Points/football_halfpoints00004.jpeg"
             ],
             
-            // Transfers - PLEASE PROVIDE FILENAMES AND FOLDER NAMES
-            "Take 10 Points!": [/* "themes/Football/Take_10/your_image.png", ... */],
-            "Take 5 Points!": [/* "themes/Football/Take_5/your_image.png", ... */],
-            "Give 10 Points!": [/* "themes/Football/Give_10/your_image.png", ... */],
-            "Give 5 Points!": [/* "themes/Football/Give_5/your_image.png", ... */]
-            
-            // Dungeon - REMOVED
-            // "Secret Dungeon Entrance!": [/* "themes/Football/Dungeon/your_image.gif", ... */]
-        },
-        
-        // --- Paths to your sounds (Optional) ---
-        // PLEASE PROVIDE FILENAMES if you have them
-        sounds: {
-            lowGain: null, // "themes/Football/your_sound.wav"
-            highGain: null,
-            lowLoss: null,
-            highLoss: null,
-            special: null,
-            gameOver: null
+            // Transfers
+            "Take 10 Points!": [],
+            "Take 5 Points!": [],
+            "Give 10 Points!": [],
+            "Give 5 Points!": []
         }
-    } // <-- Add a comma here if you add another theme after this one}
+        // 'sounds' object removed
+    }, 
 
-    // Add your next theme here:
-    // "my_second_theme": { ... }
-   ,
-   
+   "chocolate": {
+        "name": "My New Theme",
+        "description": "A new theme.",
+        "backgroundImageData": "themes/chocolate/background.jpeg",
+        "backgroundMusicData": "themes/chocolate/music.mp3",
+        "palette": [],
+        "emojis": [
+            "❓",
+            "❔"
+        ],
+        "emojiMode": "overlay",
+        "images": {
+            "+75 Points (JACKPOT!)": [
+                "themes/chocolate/images/chocolate_plus_seventyfive00001.jpeg",
+                "themes/chocolate/images/chocolate_plus_seventyfive00002.jpeg",
+                "themes/chocolate/images/chocolate_plus_seventyfive00003.jpeg",
+                "themes/chocolate/images/chocolate_plus_seventyfive00004.jpeg",
+                "themes/chocolate/images/chocolate_plus_seventyfive00005.jpeg",
+                "themes/chocolate/images/chocolate_plus_seventyfive00006.jpeg"
+            ],
+            "+50 Points (Big Bonus!)": [
+                "themes/chocolate/images/chocolate_plus_fifty00001.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifty00002.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifty00003.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifty00004.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifty00005.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifty00006.jpeg"
+            ],
+            "-50 Points (Disaster!)": [
+                "themes/chocolate/images/chocolate_minus_fifty00001.jpeg",
+                "themes/chocolate/images/chocolate_minus_fifty00002.jpeg",
+                "themes/chocolate/images/chocolate_minus_fifty00003.jpeg",
+                "themes/chocolate/images/chocolate_minus_fifty00004.jpeg",
+                "themes/chocolate/images/chocolate_minus_fifty00005.jpeg",
+                "themes/chocolate/images/chocolate_minus_fifty00006.jpeg"
+            ],
+            "+5 Points": [
+                "themes/chocolate/images/chocolate_plus_five00001.jpeg",
+                "themes/chocolate/images/chocolate_plus_five00002.jpeg",
+                "themes/chocolate/images/chocolate_plus_five00003.jpeg",
+                "themes/chocolate/images/chocolate_plus_five00004.jpeg",
+                "themes/chocolate/images/chocolate_plus_five00005.jpeg",
+                "themes/chocolate/images/chocolate_plus_five00006.jpeg"
+            ],
+            "+10 Points": [
+                "themes/chocolate/images/chocolate_plus_ten00001.jpeg",
+                "themes/chocolate/images/chocolate_plus_ten00002.jpeg",
+                "themes/chocolate/images/chocolate_plus_ten00003.jpeg",
+                "themes/chocolate/images/chocolate_plus_ten00004.jpeg",
+                "themes/chocolate/images/chocolate_plus_ten00005.jpeg",
+                "themes/chocolate/images/chocolate_plus_ten00006.jpeg"
+            ],
+            "+15 Points": [
+                "themes/chocolate/images/chocolate_plus_fifteen00001.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifteen00002.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifteen00003.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifteen00004.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifteen00005.jpeg",
+                "themes/chocolate/images/chocolate_plus_fifteen00006.jpeg"
+            ],
+            "+20 Points": [
+                "themes/chocolate/images/chocolate_plus_twenty00001.jpeg",
+                "themes/chocolate/images/chocolate_plus_twenty00002.jpeg",
+                "themes/chocolate/images/chocolate_plus_twenty00003.jpeg",
+                "themes/chocolate/images/chocolate_plus_twenty00004.jpeg",
+                "themes/chocolate/images/chocolate_plus_twenty00005.jpeg",
+                "themes/chocolate/images/chocolate_plus_twenty00006.jpeg"
+            ],
+            "-5 Points": [
+                "themes/chocolate/images/chocolate_minus_five00001.jpeg",
+                "themes/chocolate/images/chocolate_minus_five00002.jpeg",
+                "themes/chocolate/images/chocolate_minus_five00003.jpeg",
+                "themes/chocolate/images/chocolate_minus_five00004.jpeg",
+                "themes/chocolate/images/chocolate_minus_five00005.jpeg",
+                "themes/chocolate/images/chocolate_minus_five00006.jpeg"
+            ],
+            "-10 Points": [
+                "themes/chocolate/images/chocolate_minus_ten00001.jpeg",
+                "themes/chocolate/images/chocolate_minus_ten00002.jpeg",
+                "themes/chocolate/images/chocolate_minus_ten00003.jpeg",
+                "themes/chocolate/images/chocolate_minus_ten00004.jpeg", 
+                "themes/chocolate/images/chocolate_minus_ten00005.jpeg",
+                "themes/chocolate/images/chocolate_minus_ten00006.jpeg"
+            ],
+            "-20 Points": [
+                "themes/chocolate/images/chocolate_minus_twenty00001.jpeg",
+                "themes/chocolate/images/chocolate_minus_twenty00002.jpeg",
+                "themes/chocolate/images/chocolate_minus_twenty00003.jpeg",
+                "themes/chocolate/images/chocolate_minus_twenty00004.jpeg",
+                "themes/chocolate/images/chocolate_minus_twenty00005.jpeg",
+                "themes/chocolate/images/chocolate_minus_twenty00006.jpeg"
+            ],
+            "Double Your Points!": [
+                "themes/chocolate/images/chocolate_double_points00001.jpeg",
+                "themes/chocolate/images/chocolate_double_points00002.jpeg",
+                "themes/chocolate/images/chocolate_double_points00003.jpeg",
+                "themes/chocolate/images/chocolate_double_points00004.jpeg",
+                "themes/chocolate/images/chocolate_double_points00005.jpeg",
+                "themes/chocolate/images/chocolate_double_points00006.jpeg"
+            ],
+            "Lose Half Your Points!": [
+                "themes/chocolate/images/chocolate_half_points00001.jpeg",
+                "themes/chocolate/images/chocolate_half_points00002.jpeg",
+                "themes/chocolate/images/chocolate_half_points00003.jpeg",
+                "themes/chocolate/images/chocolate_half_points00004.jpeg",
+                "themes/chocolate/images/chocolate_half_points00005.jpeg",
+                "themes/chocolate/images/chocolate_half_points00006.jpeg"
+            ],
+            "Take 10 Points!": [
+                "themes/chocolate/images/chocolate_take_ten00001.jpeg",
+                "themes/chocolate/images/chocolate_take_ten00002.jpeg",
+                "themes/chocolate/images/chocolate_take_ten00003.jpeg",
+                "themes/chocolate/images/chocolate_take_ten00004.jpeg",
+                "themes/chocolate/images/chocolate_take_ten00005.jpeg",
+                "themes/chocolate/images/chocolate_take_ten00006.jpeg"
+            ],
+            "Give 10 Points!": [
+                "themes/chocolate/images/chocolate_give_ten00001.jpeg",
+                "themes/chocolate/images/chocolate_give_ten00002.jpeg",
+                "themes/chocolate/images/chocolate_give_ten00003.jpeg",
+                "themes/chocolate/images/chocolate_give_ten00004.jpeg",
+                "themes/chocolate/images/chocolate_give_ten00005.jpeg",
+                "themes/chocolate/images/chocolate_give_ten00006.jpeg"
+            ],
+            "Take 5 Points!": [
+                "themes/chocolate/images/chocolate_take_five00001.jpeg",
+                "themes/chocolate/images/chocolate_take_five00002.jpeg",
+                "themes/chocolate/images/chocolate_take_five00003.jpeg",
+                "themes/chocolate/images/chocolate_take_five00004.jpeg",
+                "themes/chocolate/images/chocolate_take_five00005.jpeg",
+                "themes/chocolate/images/chocolate_take_five00006.jpeg"
+            ],
+            "Give 5 Points!": [
+                "themes/chocolate/images/chocolate_give_five00001.jpeg",
+                "themes/chocolate/images/chocolate_give_five00002.jpeg",
+                "themes/chocolate/images/chocolate_give_five00003.jpeg",
+                "themes/chocolate/images/chocolate_give_five00004.jpeg",
+                "themes/chocolate/images/chocolate_give_five00005.jpeg",
+                "themes/chocolate/images/chocolate_give_five00006.jpeg"
+            ]
+        }
+        // 'sounds' object removed
+    }, 
+
    "pizza": {
         name: "Gemarakup Pizza Edition",
         description: "A delicious theme full of cheesy goodness.",
 
-        // TODO: Add your main background/music files here
-        backgroundImageData: "themes/Pizza/pizza_background.jpeg", // /Your_Pizza_Background.jpeg",
-        backgroundMusicData: null, // "themes/Pizza/Your_Pizza_Music.mp3",
+        backgroundImageData: "themes/pizza/pizza_background.jpeg",
+        backgroundMusicData: "themes/pizza/pizza_music.mp3",
 
-        palette: [], // Leave empty to auto-generate from background
+        palette: [], 
 
         emojis: ['🍕', '🤌', '🇮🇹', '👨‍🍳', '🧀', '🍅', '🌶️', '🍄'],
         emojiMode: 'overlay',
 
         images: {
-            // --- Jackpot ---
             "+75 Points (JACKPOT!)": [ 
-                // <-- TODO: Add paths from your "+75" folder
-                // "themes/Pizza/+75/your_image.jpeg", ... 
+                "themes/Pizza/+75/pizza_plus_seventyfive00001.jpeg",
+                "themes/Pizza/+75/pizza_plus_seventyfive00002.jpeg",
+                "themes/Pizza/+75/pizza_plus_seventyfive00003.jpeg",
+                "themes/Pizza/+75/pizza_plus_seventyfive00004.jpeg",
+                "themes/Pizza/+75/pizza_plus_seventyfive00005.jpeg",
+                "themes/Pizza/+75/pizza_plus_seventyfive00006.jpeg",
             ],
             "+50 Points (Big Bonus!)": [
-                // <-- TODO: Add paths from your "+50" folder
+                "themes/Pizza/+50/pizza_plus_fifty00001.jpeg",
+                "themes/Pizza/+50/pizza_plus_fifty00002.jpeg",
+                "themes/Pizza/+50/pizza_plus_fifty00003.jpeg",
+                "themes/Pizza/+50/pizza_plus_fifty00004.jpeg",
+                "themes/Pizza/+50/pizza_plus_fifty00005.jpeg",
             ],
             "-50 Points (Disaster!)": [
                  "themes/Pizza/-50/pizza_minus_fifty00001.jpeg",
@@ -179,13 +312,19 @@ const themes = {
                  "themes/Pizza/-50/pizza_minus_fifty00003.jpeg",
                  "themes/Pizza/-50/pizza_minus_fifty00004.jpeg"
             ],
-            
-            // --- Standard Points ---
             "+20 Points": [ 
-                // <-- TODO: Add paths from your "+20" folder
+                "themes/Pizza/+20/pizza_plus_twenty00001.jpeg",
+                "themes/Pizza/+20/pizza_plus_twenty00002.jpeg",
+                "themes/Pizza/+20/pizza_plus_twenty00003.jpeg",
+                "themes/Pizza/+20/pizza_plus_twenty00004.jpeg",
+                "themes/Pizza/+20/pizza_plus_twenty00005.jpeg",
             ],
             "+15 Points": [ 
-                // <-- TODO: Add paths from your "+15" folder
+                "themes/Pizza/+15/pizza_plus_fifteen00001.jpeg",
+                "themes/Pizza/+15/pizza_plus_fifteen00002.jpeg",
+                "themes/Pizza/+15/pizza_plus_fifteen00003.jpeg",
+                "themes/Pizza/+15/pizza_plus_fifteen00004.jpeg",
+                "themes/Pizza/+15/pizza_plus_fifteen00005.jpeg",
             ],
             "+10 Points": [ 
                 "themes/Pizza/+10/pizza_plus_ten00001.jpeg",
@@ -193,7 +332,6 @@ const themes = {
                  "themes/Pizza/+10/pizza_plus_ten00003.jpeg",
                  "themes/Pizza/+10/pizza_plus_ten00004.jpeg",
                  "themes/Pizza/+10/pizza_plus_ten00005.jpeg"
-                // <-- TODO: Add paths from your "+10" folder
             ],
             "+5 Points": [
                  "themes/Pizza/+5/pizza_plus_five00001.jpeg",
@@ -213,14 +351,15 @@ const themes = {
                  "themes/Pizza/-10/pizza_minus_ten00003.jpeg"
             ],
             "-20 Points": [
-                // <-- TODO: Add paths from your "-20" folder
-                // e.g., "themes/Pizza/-20/pizza_minus_twenty00001.jpeg"
+             "themes/Pizza/-20/pizza_minus_twenty00001.jpeg",
+             "themes/Pizza/-20/pizza_minus_twenty00002.jpeg",
             ],
-            
-            // --- Special ---
             "Double Your Points!": [
-                // <-- TODO: Add paths from your "double_points" folder
-                // e.g., "themes/Pizza/double_points/your_image.jpeg"
+                "themes/Pizza/double_points/pizza_double_points00001.jpeg",
+                "themes/Pizza/double_points/pizza_double_points00002.jpeg",
+                "themes/Pizza/double_points/pizza_double_points00003.jpeg",
+                "themes/Pizza/double_points/pizza_double_points00004.jpeg",
+                "themes/Pizza/double_points/pizza_double_points00005.jpeg",
             ],
             "Lose Half Your Points!": [
                 "themes/Pizza/lose_half/pizza_halfpoints00001.jpeg",
@@ -228,8 +367,6 @@ const themes = {
                 "themes/Pizza/lose_half/pizza_halfpoints00003.jpeg",
                 "themes/Pizza/lose_half/pizza_halfpoints00004.jpeg"
             ],
-            
-            // --- Transfers ---
             "Take 10 Points!": [
                 "themes/Pizza/take_10/pizza_take_ten00001.jpeg",
                 "themes/Pizza/take_10/pizza_take_ten00002.jpeg",
@@ -237,26 +374,175 @@ const themes = {
                 "themes/Pizza/take_10/pizza_take_ten00004.jpeg"
             ],
             "Take 5 Points!": [
-                // <-- TODO: Add paths from your "take_5" folder
+                "themes/Pizza/take_5/pizza_take_five00001.jpeg",
+                "themes/Pizza/take_5/pizza_take_five00002.jpeg",
+                "themes/Pizza/take_5/pizza_take_five00003.jpeg",
+                "themes/Pizza/take_5/pizza_take_five00004.jpeg",
+                "themes/Pizza/take_5/pizza_take_five00005.jpeg",
             ],
             "Give 10 Points!": [
-                // <-- TODO: Add paths from your "give_10" folder
+                "themes/Pizza/give_10/pizza_give_ten00001.jpeg",
+                "themes/Pizza/give_10/pizza_give_ten00002.jpeg",
+                "themes/Pizza/give_10/pizza_give_ten00003.jpeg",
+                "themes/Pizza/give_10/pizza_give_ten00004.jpeg",
+                "themes/Pizza/give_10/pizza_give_ten00005.jpeg", 
             ],
             "Give 5 Points!": [
-                // <-- TODO: Add paths from your "give_5" folder
+                "themes/Pizza/give_5/pizza_give_five00001.jpeg",
+                "themes/Pizza/give_5/pizza_give_five00002.jpeg",
+                "themes/Pizza/give_5/pizza_give_five00003.jpeg",
+                "themes/Pizza/give_5/pizza_give_five00004.jpeg",
+                "themes/Pizza/give_5/pizza_give_five00005.jpeg",
             ]
-        },
-        
-        sounds: {
-            // <-- TODO: I saw your "Pizza - High" and "Pizza - Low" folders.
-            // Add the full path to the sound files inside them here.
-            lowGain: null,  // e.g., "themes/Pizza/Pizza - Low/your_sound.mp3"
-            highGain: null, // e.g., "themes/Pizza/Pizza - High/your_sound.mp3"
-            lowLoss: null,  // e.g., "themes/Pizza/Pizza - Low/your_sound.mp3"
-            highLoss: null,
-            special: null,
-            gameOver: null
         }
+        // 'sounds' object removed
+    }, 
+
+   "niagarafalls": {
+        "name": "Niagara Falls Adventure",
+        "description": "Join Leibish & Shulem on a wild Niagara Falls adventure!",
+        "backgroundImageData": "themes/niagarafalls/background.jpeg",
+        "backgroundMusicData": "themes/niagarafalls/music.mp3",
+        "palette": [],
+        "emojis": [
+            "💦 ",
+            "💧",
+            "🌧️", 
+            "🎡",
+            "🍭",
+        ],
+        "emojiMode": "overlay",
+        "images": {
+            "+75 Points (JACKPOT!)": [
+                "themes/niagarafalls/images/niagarafalls_plus_seventyfive00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_seventyfive00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_seventyfive00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_seventyfive00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_seventyfive00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_seventyfive00006.jpeg"
+            ],
+            "+50 Points (Big Bonus!)": [
+                "themes/niagarafalls/images/niagarafalls_plus_fifty00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifty00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifty00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifty00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifty00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifty00006.jpeg"
+            ],
+            "-50 Points (Disaster!)": [
+                "themes/niagarafalls/images/niagarafalls_minus_fifty00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_fifty00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_fifty00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_fifty00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_fifty00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_fifty00006.jpeg"
+            ],
+            "+5 Points": [
+                "themes/niagarafalls/images/niagarafalls_plus_five00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_five00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_five00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_five00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_five00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_five00006.jpeg"
+            ],
+            "+10 Points": [
+                "themes/niagarafalls/images/niagarafalls_plus_ten00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_ten00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_ten00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_ten00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_ten00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_ten00006.jpeg"
+            ],
+            "+15 Points": [
+                "themes/niagarafalls/images/niagarafalls_plus_fifteen00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifteen00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifteen00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifteen00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifteen00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_fifteen00006.jpeg"
+            ],
+            "+20 Points": [
+                "themes/niagarafalls/images/niagarafalls_plus_twenty00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_twenty00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_twenty00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_twenty00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_twenty00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_plus_twenty00006.jpeg"
+            ],
+            "-5 Points": [
+                "themes/niagarafalls/images/niagarafalls_minus_five00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_five00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_five00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_five00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_five00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_five00006.jpeg"
+            ],
+            "-10 Points": [
+                "themes/niagarafalls/images/niagarafalls_minus_ten00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_ten00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_ten00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_ten00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_ten00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_ten00006.jpeg"
+            ],
+            "-20 Points": [
+                "themes/niagarafalls/images/niagarafalls_minus_twenty00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_twenty00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_twenty00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_twenty00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_twenty00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_minus_twenty00006.jpeg"
+            ],
+            "Double Your Points!": [
+                "themes/niagarafalls/images/niagarafalls_double_points00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_double_points00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_double_points00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_double_points00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_double_points00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_double_points00006.jpeg"
+            ],
+            "Lose Half Your Points!": [
+                "themes/niagarafalls/images/niagarafalls_half_points00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_half_points00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_half_points00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_half_points00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_half_points00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_half_points00006.jpeg"
+            ],
+            "Take 10 Points!": [
+                "themes/niagarafalls/images/niagarafalls_take_ten00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_ten00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_ten00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_ten00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_ten00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_ten00006.jpeg"
+            ],
+            "Give 10 Points!": [
+                "themes/niagarafalls/images/niagarafalls_give_ten00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_ten00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_ten00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_ten00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_ten00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_ten00006.jpeg"
+            ],
+            "Take 5 Points!": [
+                "themes/niagarafalls/images/niagarafalls_take_five00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_five00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_five00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_five00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_five00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_take_five00006.jpeg"
+            ],
+            "Give 5 Points!": [
+                "themes/niagarafalls/images/niagarafalls_give_five00001.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_five00002.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_five00003.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_five00004.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_five00005.jpeg",
+                "themes/niagarafalls/images/niagarafalls_give_five00006.jpeg"
+            ]
+        }
+        // 'sounds' object removed
     }
 
 };

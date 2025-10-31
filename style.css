@@ -123,10 +123,18 @@ header {
     justify-content: space-between; /* Push info and score apart */
     align-items: center; /* Vertically align items */
 }
+/* --- SCOREBOARD FIX (Item 5) --- */
 .team.active-turn { 
-    transform: scale(1.05); /* Slightly smaller scale than board hover */
-    box-shadow: 0 0 25px var(--accent-color);
+    /* transform: scale(1.05); */ /* <-- REMOVED this line to prevent clipping */
+    border-width: 5px; /* <-- ADDED */
+    box-shadow: 0 0 30px var(--accent-color); /* <-- ADDED brighter glow */
 }
+/* ADDED: Change name color for active team */
+.team.active-turn .team-name {
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+/* --- END SCOREBOARD FIX --- */
 
 /* Rank Colors */
 .team.rank-1 { border-color: var(--rank1-color); box-shadow: 0 0 20px var(--rank1-color); }
@@ -141,9 +149,6 @@ header {
     font-size: 1.1rem; /* Slightly smaller for better fit */
     text-transform: uppercase; 
     font-family: 'Russo One', sans-serif; 
-    /* white-space: nowrap; */ /* <-- REMOVED */
-    /* overflow: hidden; */ /* <-- REMOVED */
-    /* text-overflow: ellipsis; */ /* <-- REMOVED */
     flex-shrink: 1; /* Allow info to shrink if needed */
 }
 .team-avatar { 
@@ -151,8 +156,6 @@ header {
     flex-shrink: 0; /* Don't shrink avatar */
 }
 .team-name{
-     /* overflow: hidden; */ /* <-- REMOVED */
-     /* text-overflow: ellipsis; */ /* <-- REMOVED */
      word-break: break-word; /* <-- ADDED */
 }
 
@@ -166,12 +169,23 @@ header {
     flex-shrink: 0; /* Prevent score from shrinking */
     margin-left: 10px; /* Add space between name and score */
 }
-/* Make game menu button stick to bottom */
-#scoreboard-container #game-menu-btn { 
-    margin-top: auto; /* Pushes button to bottom */
-    margin-bottom: 5px; /* Add some space at the very bottom */
-    width: 100%; 
+
+/* --- LOGO STYLING (Item 10) --- */
+#game-logo {
+    width: 80%;
+    margin: 2rem auto 1rem; /* auto margins for centering */
+    display: block;
+    opacity: 0.8;
 }
+/* --- END LOGO STYLING --- */
+
+/* --- END GAME BUTTON FIX (Item 9) --- */
+/* Hide the redundant 'End Game' button at the bottom */
+#scoreboard-container #game-menu-btn { 
+    display: none; 
+}
+/* --- END BUTTON FIX --- */
+
 
 /* --- SETUP & CREATOR SCREENS --- */
 .menu-content { 
@@ -629,4 +643,146 @@ button:disabled {
 }
 .img-remove-btn:hover {
     background: #ff4785;
+}
+/* --- NEW: Square Entrance Animation --- */
+.square-enter {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+/* --- NEW: Points Animation (Item 12) --- */
+.points-animation {
+    position: absolute; /* We will position this with JS */
+    font-size: 2.5rem;
+    font-family: 'Russo One', sans-serif;
+    font-weight: 700;
+    opacity: 1;
+    animation: float-and-fade 1.5s ease-out forwards;
+    z-index: 1001; /* Above modals */
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+.points-animation.positive {
+    color: var(--rank1-color); /* Green */
+}
+.points-animation.negative {
+    color: var(--rank-last-color); /* Red */
+}
+
+@keyframes float-and-fade {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-80px); /* Float up 80px */
+        opacity: 0;
+    }
+}
+/* --- NEW: Theme Carousel (Item 6) --- */
+
+#theme-carousel-container {
+    padding: 1rem 0;
+    /* This creates the 3D "viewing distance" */
+    perspective: 1200px;
+    position: relative;
+    width: 100%;
+    height: 350px; /* Taller to fit carousel */
+    margin-top: 1rem;
+}
+
+#theme-carousel-stage {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* This allows us to spin the carousel in 3D */
+    transform-style: preserve-3d;
+}
+
+#theme-carousel {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+}
+
+.theme-cell {
+    position: absolute;
+    width: 280px;  /* Width of the carousel panels */
+    height: 320px; /* Height of the carousel panels */
+    left: calc(50% - 140px); /* Center the panel */
+    top: 10px;
+    
+    border: 3px solid var(--accent-color);
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--primary-bg); /* Fallback */
+    overflow: hidden;
+    /* Backface-visibility hides the back of the panel when it spins */
+    backface-visibility: hidden;
+}
+
+.theme-cell-overlay {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+    color: var(--white);
+    text-shadow: 0 1px 3px #000;
+}
+
+.theme-cell-overlay h3 {
+    text-align: left;
+    margin: 0;
+    font-size: 1.5rem;
+    font-family: 'Russo One', sans-serif;
+    color: var(--white);
+}
+
+.theme-cell-overlay p {
+    text-align: left;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin: 0.25rem 0 0 0;
+}
+
+/* Navigation for the carousel */
+#theme-carousel-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: -30px; /* Pull nav buttons up slightly */
+    position: relative;
+    z-index: 10;
+}
+#theme-carousel-nav button {
+    font-size: 2rem;
+    padding: 0.25rem 1.5rem;
+}
+
+/* Info display below the carousel */
+#theme-info-display {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--light-bg);
+}
+#theme-info-name {
+    font-size: 1.75rem;
+    color: var(--accent-color);
+    margin: 0;
+}
+#theme-info-description {
+    font-size: 1rem;
+    margin: 0.5rem 0 1.5rem 0;
+    min-height: 40px; /* Prevent jumping */
+}
+#theme-start-btn {
+    font-size: 1.5rem;
+    padding: 0.75rem 2rem;
 }

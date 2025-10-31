@@ -36,11 +36,26 @@
         <div id="setup-container" class="container">
              <div class="menu-content">
                 <div class="menu-section">
-                    <h2>Select a Theme</h2>
-                    <p>These themes are built into the game.</p>
-                    <div id="built-in-themes-list" style="margin-top: 1rem;">
-                        </div>
+    <h2 style="margin-bottom: 0;">Select a Theme</h2>
+    
+    <div id="theme-carousel-container">
+        <div id="theme-carousel-stage">
+            <div id="theme-carousel">
                 </div>
+        </div>
+    </div>
+    
+    <div id="theme-carousel-nav">
+        <button id="theme-nav-left">&larr;</button>
+        <button id="theme-nav-right">&rarr;</button>
+    </div>
+    
+    <div id="theme-info-display">
+        <h3 id="theme-info-name">Theme Name</h3>
+        <p id="theme-info-description">Theme description goes here.</p>
+        <button id="theme-start-btn">Start Game</button>
+    </div>
+</div>
 
                 <div class="menu-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -59,6 +74,7 @@
         <div id="game-container" class="hidden">
             <div id="scoreboard-container">
                 <div id="scoreboard"></div>
+                <img id="game-logo" src="images/logo.png" alt="Gemarakup Logo">
                 <button id="game-menu-btn">End Game</button>
             </div>
             <div id="game-board"></div>
@@ -75,11 +91,11 @@
                 </div>
             </div>
             <div class="menu-section" style="background: none; padding: 1rem 0;">
-                <h3>Game Length</h3>
+                <h3>Game Length (Item 3)</h3>
                 <div id="game-length-options-modal" class="game-options">
-                    <label><input type="radio" name="game-length-modal" value="30" checked> Short (~30)</label>
+                    <label><input type="radio" name="game-length-modal" value="36" checked> Short (~36)</label>
                     <label><input type="radio" name="game-length-modal" value="60"> Medium (~60)</label>
-                    <label><input type="radio" name="game-length-modal" value="90"> Long (~90)</label>
+                    <label><input type="radio" name="game-length-modal" value="84"> Long (~84)</label>
                 </div>
             </div>
             <div class="menu-section" style="background: none; padding: 1rem 0;">
@@ -144,7 +160,7 @@
     <div id="game-over-modal" class="modal hidden">
         <div class="modal-content game-over-content">
             <h1>Game Over!</h1>
-            <div class="winner-trophy">醇</div>
+            <div class="winner-trophy">🏆</div>
             <div class="winner-details">
                 <span id="winner-avatar"></span>
                 <h2 id="winner-name"></h2>
@@ -206,6 +222,6 @@
     <script src="howler.min.js"></script> 
     
     <script src="theme-data.js"></script>      
-    <script src="script.js?v=5"></script>      
+    <script src="script.js?v=6"></script>      
     </body>
 </html>
